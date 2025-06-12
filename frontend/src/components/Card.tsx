@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Flex from "./Flex";
+// import Flex from "./Flex";
 import { colors } from "../theme/theme";
 
 type ThemeColor = keyof typeof colors;
@@ -18,14 +18,14 @@ interface Props {
 function Card({
   width,
   height,
-  radius,
-  color,
-  shadow,
-  className,
-  children,
-  style,
-}: Props) {
-  const classes: string[] = [];
+}: // radius,
+// color,
+// shadow,
+// className,
+// children,
+// style,
+Props) {
+  // const classes: string[] = [];
   const customStyle: React.CSSProperties = {};
 
   // width & height

@@ -1,7 +1,7 @@
 import DentLogo from "./DentLogo";
 import Flex from "../../components/Flex";
 import LoginCard from "./LoginCard";
-import Background from "./Background";
+// import Background from "./Background";
 function Login() {
   return (
     // <Background>

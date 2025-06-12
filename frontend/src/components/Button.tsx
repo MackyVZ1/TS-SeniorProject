@@ -13,8 +13,8 @@ interface Props {
 
 function Button({ type, backgroundColor, className, style, children }: Props) {
   const classes: string[] = [
-    `bg-[${colors.primary}] w-[140px] p-4 rounded-3xl transition-all transform duration-300 text-white text-base
-    hover:cursor-pointer hover:bg-[${colors.primary}]/70
+    `bg-[#7C22B4] w-[140px] p-4 rounded-3xl transition-all transform duration-300 text-white text-base
+    hover:cursor-pointer hover:bg-[#7C22B4]/70
     md:w-[180px] md:p-6 md:rounded-4xl md:text-[24px]`,
   ];
   const customStyle: React.CSSProperties = {};

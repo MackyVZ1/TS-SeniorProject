@@ -2,7 +2,6 @@ import Button from "../../components/Button";
 import Flex from "../../components/Flex";
 import Input from "../../components/Input";
 import Text from "../../components/Text";
-import { colors } from "../../theme/theme";
 import LogoBackground from "./LogoBackground";
 
 function LoginCard() {
@@ -11,7 +10,7 @@ function LoginCard() {
       <Flex
         direction="column"
         justifyContent="center"
-        className={`w-[340px] p-[20px] rounded-4xl bg-[${colors.secondary}]/80 gap-[20px] shadow-lg shadow-[${colors.primary}]
+        className={`w-[340px] p-[20px] rounded-4xl bg-[#A861D4]/80 gap-[20px] shadow-lg shadow-[#7C22B4]
         md:w-[600px] md:h-[480px] md:p-[40px]
         lg:h-[550px]`}
       >

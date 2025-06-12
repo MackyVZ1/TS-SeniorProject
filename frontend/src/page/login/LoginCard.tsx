@@ -15,7 +15,7 @@ function LoginCard() {
         lg:h-[550px]`}
       >
         <Flex direction="column" textAlign="center">
-          <Text semibold className={`text-[18px] md:text-[36px]`}>
+          <Text semibold className={`text-[28px] md:text-[36px]`}>
             .: e-Chart :.
           </Text>
           <Text medium className={`text-[18px] md:text-[28px]`}>

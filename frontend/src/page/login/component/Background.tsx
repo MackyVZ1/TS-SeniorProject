@@ -1,7 +1,7 @@
 import backgroundImg from "../../assets/png/login_background.png";
 
 import type { ReactNode } from "react";
-import Flex from "../../components/Flex";
+import Flex from "../../../components/Flex";
 
 interface Props {
   children: ReactNode;

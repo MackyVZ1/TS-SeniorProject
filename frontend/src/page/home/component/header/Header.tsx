@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../../components/Button";
-import Flex from "../../../components/Flex";
-import Text from "../../../components/Text";
+import Button from "../../../../components/Button";
+import Flex from "../../../../components/Flex";
+import Text from "../../../../components/Text";
 
-import DentImg from "../../../assets/logo/dent_logo_nobackground.png";
+import DentImg from "../../../../assets/logo/dent_logo_nobackground.png";
 
 import {
   AdduserIcon,
@@ -14,8 +14,8 @@ import {
   UserSearchIcon,
   StaffManagementIcon,
   ReserveChartIcon,
-} from "../../../assets/svg/index";
-import { colors } from "../../../theme/theme";
+} from "../../../../assets/svg/index";
+import { colors } from "../../../../theme/theme";
 function Header() {
   const [isActive, setActive] = useState<boolean>(false);
   const nav = useNavigate();
@@ -58,7 +58,7 @@ function Header() {
 
   return (
     <>
-      {/**Mobile */}
+      {/******** Mobile *********/}
       <Flex
         className={`p-[20px] w-full h-[75px] shadow-[${colors.primary}] shadow-lg
           md:h-[100px] 
@@ -86,7 +86,7 @@ function Header() {
         </Flex>
       </Flex>
 
-      {/**Navbar Mobile */}
+      {/******** Navbar Mobile ********/}
       <Flex
         className={`fixed top-0 left-0 w-screen h-screen bg-white/95 z-50 px-8 py-8 transition-transform duration-300 ease-in-out gap-[16px]
              ${isActive ? "-translate-x-0" : "translate-x-full"}
@@ -117,20 +117,38 @@ function Header() {
         </ul>
       </Flex>
 
-      {/**Tablet, Desktop */}
+      {/******** Tablet, Desktop ********/}
       <Flex
         justifyContent="between"
         backgroundColor="secondary"
-        className={`hidden lg:flex px-6 py-8 w-[280px] h-screen shadow-[${colors.primary}] shadow-xl`}
+        className={`hidden lg:flex px-6 py-4 w-[280px] h-screen shadow-[${colors.primary}] shadow-xl`}
         direction="column"
       >
-        <Flex direction="column" className="gap-[36px]">
-          <Flex justifyContent="center" className="p-5">
+        <Flex direction="column" className="gap-[28px]">
+          <Flex
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+            onClick={() => nav("/home")}
+            className="p-5 gap-[8px] hover:cursor-pointer"
+          >
+            <Text
+              bold
+              className="text-[32px] text-shadow-sm text-shadow-black/40"
+            >
+              e-Chart
+            </Text>
             <img
               src={DentImg}
               alt="Logo"
-              className="w-[150px] rounded-[72px] bg-white"
+              className="w-[220px] rounded-[120px] bg-white"
             />
+            <Text semibold className="text-[24px]">
+              ยินดีต้อนรับ
+              <br />
+              username
+            </Text>
           </Flex>
           <ul className={`flex flex-col gap-[16px] hover:cursor-pointer`}>
             {navbarList.map((list, index) => {

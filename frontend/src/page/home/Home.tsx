@@ -1,10 +1,12 @@
 import Flex from "../../components/Flex";
-import Header from "./component/Header";
+import Feature from "./component/features/Feature";
+import Header from "./component/header/Header";
 
 function Home() {
   return (
-    <Flex>
+    <Flex direction="column" className="lg:flex-row">
       <Header />
+      <Feature />
     </Flex>
   );
 }

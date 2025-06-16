@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { TbdentaluserrecordService } from './tbdentaluserrecord.service';
 import { CreateTbdentaluserrecordDto } from './dto/create-tbdentaluserrecord.dto';
@@ -25,11 +26,20 @@ import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiExtraModels,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
+import { Roles, ROLES } from 'src/utils/auth/role.decorator';
+import { RolesGuard } from 'src/utils/auth/role.guard';
+import { User } from 'src/utils/auth/user.decorator';
 
 @ApiTags('tbdentalrecorduser')
+@ApiBearerAuth()
 @ApiExtraModels(tbdentaluserecord)
 @Controller('tbdentalrecorduser')
+@UseGuards(RolesGuard)
+@Roles(ROLES.ADMIN)
 export class TbdentaluserrecordController {
   constructor(
     private readonly tbdentaluserrecordService: TbdentaluserrecordService,
@@ -47,6 +57,31 @@ export class TbdentaluserrecordController {
         message: {
           type: 'string',
         },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: {
+          type: 'string',
+          example: 'Access denied. Required roles: admin. User role: teacher',
+        },
+        error: { type: 'string', example: 'Forbidden' },
       },
     },
   })
@@ -85,7 +120,10 @@ export class TbdentaluserrecordController {
     description: 'Failed to user',
   })
   @Post()
-  create(@Body() createTbdentaluserrecordDto: CreateTbdentaluserrecordDto) {
+  create(
+    @Body() createTbdentaluserrecordDto: CreateTbdentaluserrecordDto,
+    @User() currentUser: any,
+  ) {
     return this.tbdentaluserrecordService.create(createTbdentaluserrecordDto);
   }
 
@@ -182,6 +220,12 @@ export class TbdentaluserrecordController {
       },
     },
   })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
+  })
   @ApiNotFoundResponse({
     description: 'User not found.',
   })
@@ -210,6 +254,12 @@ export class TbdentaluserrecordController {
     status: 200,
     description: 'The dental user record has been successfully updated',
     type: tbdentaluserecord,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
   })
   @ApiNotFoundResponse({
     description: 'Dental user record not found',
@@ -254,6 +304,12 @@ export class TbdentaluserrecordController {
         },
       },
     },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
   })
   @ApiNotFoundResponse({
     description: 'Dental user not found',

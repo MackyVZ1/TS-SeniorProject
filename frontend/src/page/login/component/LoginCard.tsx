@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../../../components/Button";
 import Flex from "../../../components/Flex";
 import Input from "../../../components/Input";
@@ -5,6 +6,11 @@ import Text from "../../../components/Text";
 import LogoBackground from "./LogoBackground";
 
 function LoginCard() {
+  const nav = useNavigate();
+
+  const handleSignup = () => {
+    nav("/home");
+  };
   return (
     <LogoBackground>
       <Flex
@@ -33,7 +39,9 @@ function LoginCard() {
           <Input type="password" />
         </Flex>
         <Flex justifyContent="center">
-          <Button type="submit">ลงชื่อเข้าใช้</Button>
+          <Button type="submit" onClick={handleSignup}>
+            ลงชื่อเข้าใช้
+          </Button>
         </Flex>
       </Flex>
     </LogoBackground>

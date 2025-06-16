@@ -1,6 +1,6 @@
-import DentImg from "../../assets/logo/dent_logo_nobackground.png";
-import Text from "../../components/Text";
-import Flex from "../../components/Flex";
+import DentImg from "../../../assets/logo/dent_logo_nobackground.png";
+import Text from "../../../components/Text";
+import Flex from "../../../components/Flex";
 function DentLogo() {
   return (
     <Flex

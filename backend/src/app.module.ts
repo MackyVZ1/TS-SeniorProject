@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { TbdentaluserrecordModule } from './tbdentaluserrecord/tbdentaluserrecord.module';
 import { TpatientModule } from './tpatient/tpatient.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TpatientModule } from './tpatient/tpatient.module';
     DatabaseModule,
     TbdentaluserrecordModule,
     TpatientModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,13 +9,21 @@ interface Props {
   className?: string;
   style?: React.CSSProperties;
   children?: ReactNode;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-function Button({ type, backgroundColor, className, style, children }: Props) {
+function Button({
+  type,
+  backgroundColor,
+  className,
+  style,
+  children,
+  onClick,
+}: Props) {
   const classes: string[] = [
-    `bg-[#7C22B4] w-[140px] p-4 rounded-3xl transition-all transform duration-300 text-white text-base
+    `bg-[#7C22B4] px-8 py-4 rounded-2xl transition-all transform duration-300 text-white text-base
     hover:cursor-pointer hover:bg-[#7C22B4]/70
-    md:w-[180px] md:p-6 md:rounded-4xl md:text-[24px]`,
+    `,
   ];
   const customStyle: React.CSSProperties = {};
 
@@ -36,6 +44,7 @@ function Button({ type, backgroundColor, className, style, children }: Props) {
       type={type}
       className={allClasses}
       style={{ ...customStyle, ...style }}
+      onClick={onClick}
     >
       {children}
     </button>

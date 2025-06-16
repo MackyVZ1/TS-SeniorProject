@@ -12,6 +12,7 @@ interface Props {
   className?: string;
   children?: ReactNode;
   style?: React.CSSProperties;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 function Flex({
   justifyContent,
@@ -22,6 +23,7 @@ function Flex({
   className,
   children,
   style,
+  onClick,
 }: Props) {
   const classes: string[] = ["flex"];
   const customStyle: React.CSSProperties = {};
@@ -93,7 +95,11 @@ function Flex({
   const allClasses = classes.join(" ") + (className ? ` ${className}` : "");
 
   return (
-    <div className={allClasses} style={{ ...customStyle, ...style }}>
+    <div
+      className={allClasses}
+      style={{ ...customStyle, ...style }}
+      onClick={onClick}
+    >
       {children}
     </div>
   );

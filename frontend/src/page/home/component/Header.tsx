@@ -13,7 +13,6 @@ import {
   LogoutIcon,
   UserSearchIcon,
   StaffManagementIcon,
-  SearchIcon,
   ReserveChartIcon,
 } from "../../../assets/svg/index";
 import { colors } from "../../../theme/theme";

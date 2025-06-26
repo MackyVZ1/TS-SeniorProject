@@ -1,8 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { TbRole } from 'src/entities/tbrole.entity';
+import { TbClinic } from 'src/entities/tbclinic.entity';
 
 @Entity('tbdentalrecorduser')
-export class tbdentaluserecord {
+export class tbdentaluserrecord {
   @ApiProperty({
     description: 'ID ผู้ใช้งานระบบทันตกรรม',
     example: 1,
@@ -98,4 +106,12 @@ export class tbdentaluserecord {
   })
   @Column({ type: 'varchar', nullable: true, default: null })
   clinicid?: string;
+
+  @ManyToOne(() => TbRole, { eager: false })
+  @JoinColumn({ name: 'roleID', referencedColumnName: 'roleId' })
+  role: TbRole;
+
+  @ManyToOne(() => TbClinic, { eager: false })
+  @JoinColumn({ name: 'clinicid', referencedColumnName: 'clinicID' })
+  clinic: TbClinic;
 }

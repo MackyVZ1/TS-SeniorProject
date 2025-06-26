@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../../components/Button";
 import Flex from "../../../../components/Flex";
 import Text from "../../../../components/Text";
@@ -14,67 +14,165 @@ import {
   UserSearchIcon,
   StaffManagementIcon,
   ReserveChartIcon,
+  DashboardIcon,
+  RoomIcon,
 } from "../../../../assets/svg/index";
 import { colors } from "../../../../theme/theme";
+import axios from "axios";
+import { SuccessModal, ErrorModal } from "../../../../components/Modal";
+import Select from "../../../../components/Select";
 function Header() {
   const [isActive, setActive] = useState<boolean>(false);
+  const [modalOn, setModalOn] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [activeNavIndex, setActiveNavIndex] = useState<number | null>(null);
+
+  const location = useLocation();
   const nav = useNavigate();
+
+  const users = sessionStorage.getItem("users");
+  const roleName = sessionStorage.getItem("roleName");
+
+  const [selectedRole, setSelectedRole] = useState<string>(
+    sessionStorage.getItem("roleName") || ""
+  );
 
   const handleNavbar = () => {
     setActive(!isActive);
   };
 
-  const handleSignout = () => {
-    nav(-1);
+  const handleNavbarClick = (index: number, func: () => void) => {
+    setActiveNavIndex(index);
+    func();
   };
 
-  const navbarList = [
+  const handleNavbarClickMobile = (index: number, func: () => void) => {
+    setActiveNavIndex(index);
+    func();
+    setActive(!isActive);
+  };
+
+  const handleSignout = async () => {
+    const token = sessionStorage.getItem("token");
+    try {
+      await axios.post(
+        "http://localhost:3000/api/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setModalOn(true);
+      sessionStorage.clear();
+      setTimeout(() => {
+        setModalOn(false);
+        nav("/");
+      }, 1000);
+    } catch (e: any) {
+      let errorMessage = e?.response?.data?.message;
+      console.error(errorMessage);
+      if (errorMessage == "Token not found.") {
+        errorMessage = "ไม่พบโทเค็น";
+      } else errorMessage = "เซิร์ฟเวอร์ขัดข้อง";
+      setError(errorMessage);
+      setModalOn(true);
+
+      setTimeout(() => {
+        setError("");
+        setModalOn(false);
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedRole === "Administrator") {
+      const path = location.pathname;
+      const index = navbarList.findIndex((item) => {
+        if (item.desc === "แดชบอร์ด")
+          return path === "/home" || path === "/home/dashboard";
+        if (item.desc === "จัดการข้อมูลเจ้าหน้าที่")
+          return path === "/home/management";
+        if (item.desc === "ลงทะเบียนคนไข้ใหม่")
+          return path === "/home/addpatient";
+        if (item.desc === "ค้นหาคนไข้") return path === "/home/searchpatient";
+        if (item.desc === "จอง/คืนชาร์ต") return path === "/home/chartreserve";
+        if (item.desc === "Refer") return path === "/home/refer";
+        return false;
+      });
+      setActiveNavIndex(index === -1 ? null : index);
+    } else {
+      setActiveNavIndex(0);
+    }
+  }, [selectedRole, location.pathname]);
+
+  const roleOptions = [
+    { value: "Administrator", label: "ผู้ดูแลระบบ" },
+    { value: "เวชระเบียน", label: "เวชระเบียน" },
+    { value: "อาจารย์", label: "อาจารย์" },
+    { value: "ปริญญาตรี", label: "ปริญญาตรี" },
+  ];
+
+  const allFeatures = [
+    {
+      icon: <DashboardIcon />,
+      func: () => nav("/home"),
+      desc: "แดชบอร์ด",
+      roles: ["Administrator"],
+    },
     {
       icon: <StaffManagementIcon />,
-      func: handleSignout,
+      func: () => nav("/home/management"),
       desc: "จัดการข้อมูลเจ้าหน้าที่",
+      roles: ["Administrator"],
     },
     {
       icon: <AdduserIcon />,
-      func: handleSignout,
+      func: () => nav("/home/addpatient"),
       desc: "ลงทะเบียนคนไข้ใหม่",
+      roles: ["เวชระเบียน"],
     },
     {
       icon: <UserSearchIcon />,
-      func: handleSignout,
+      func: () => nav("/home/searchpatient"),
       desc: "ค้นหาคนไข้",
+      roles: ["เวชระเบียน"],
     },
     {
       icon: <ReserveChartIcon />,
-      func: handleSignout,
+      func: () => nav("/home/chartreserve"),
       desc: "จอง/คืนชาร์ต",
+      roles: ["เวชระเบียน"],
+    },
+    {
+      icon: <RoomIcon />,
+      func: () => nav("/home/refer"),
+      desc: "Refer",
+      roles: ["เวชระเบียน", "อาจารย์", "ปริญญาตรี"],
     },
     {
       icon: <LogoutIcon />,
       func: handleSignout,
       desc: "ลงชื่อออก",
+      roles: ["Administrator", "เวชระเบียน", "อาจารย์", "ปริญญาตรี"],
     },
   ];
 
+  const navbarList = allFeatures.filter((item) =>
+    item.roles.includes(selectedRole)
+  );
   return (
     <>
       {/******** Mobile *********/}
       <Flex
-        className={`p-[20px] w-full h-[75px] shadow-[${colors.primary}] shadow-lg
-          md:h-[100px] 
+        className={`sticky top-0 z-50 p-[20px] w-full h-[75px] shadow-[${colors.primary}] shadow-lg
+          md:h-[100px] md:justify-start md:gap-6
           lg:hidden`}
         backgroundColor="secondary"
         alignItems="center"
         justifyContent="between"
       >
-        <Flex className="gap-[6px]" alignItems="center">
-          <Text medium className="text-[22px] md:text-[32px]">
-            e-Chart |
-          </Text>
-          <Text medium className="text-[18px] md:text-[28px]">
-            ยินดีต้อนรับ, username
-          </Text>
-        </Flex>
         <Flex
           className="p-2 rounded-xl md:w-[62px] md:h-[62px]"
           backgroundColor="primary"
@@ -84,12 +182,20 @@ function Header() {
         >
           <HamburgerIcon />
         </Flex>
+        <Flex className="gap-[6px]" alignItems="center">
+          <Text medium className="text-white text-[22px] md:text-[32px]">
+            e-Chart |
+          </Text>
+          <Text medium className="text-white text-[18px] md:text-[28px]">
+            ยินดีต้อนรับ, {users}
+          </Text>
+        </Flex>
       </Flex>
 
       {/******** Navbar Mobile ********/}
       <Flex
         className={`fixed top-0 left-0 w-screen h-screen bg-white/95 z-50 px-8 py-8 transition-transform duration-300 ease-in-out gap-[16px]
-             ${isActive ? "-translate-x-0" : "translate-x-full"}
+             ${isActive ? "translate-x-0" : "-translate-x-full"}
              `}
         direction="column"
       >
@@ -103,17 +209,43 @@ function Header() {
         <Flex justifyContent="center" className="rounded-4xl bg-[#E3C4F6]">
           <img src={DentImg} alt="Logo" className="w-[150px]" />
         </Flex>
+        <Flex alignItems="center" justifyContent="center" className="gap-[8px]">
+          <Text className="text-black">บทบาท:</Text>
+          {roleName === "Administrator" ? (
+            <Select
+              name="role"
+              options={roleOptions}
+              value={selectedRole}
+              onChange={(v) => setSelectedRole(v as string)}
+            />
+          ) : (
+            <Text>{roleName}</Text>
+          )}
+        </Flex>
         <ul className="flex flex-col gap-[8px]">
-          {navbarList.map((list, index) => (
-            <li key={index}>
-              <Button className="w-full rounded-xl" onClick={list.func}>
-                <Flex alignItems="center" className="gap-[8px]">
-                  {list.icon}
-                  <Text className="md:text-[20px]">{list.desc}</Text>
-                </Flex>
-              </Button>
-            </li>
-          ))}
+          {navbarList.map((list, index) => {
+            // ตรวจสอบ index จริงใน allFeatures
+            const realIndex = allFeatures.findIndex(
+              (item) => item.desc === list.desc
+            );
+            return (
+              <li key={index}>
+                <Button
+                  className={`w-full rounded-xl ${
+                    activeNavIndex === realIndex
+                      ? "bg-[#7C22B4] text-white"
+                      : ""
+                  }`}
+                  onClick={() => handleNavbarClickMobile(realIndex, list.func)}
+                >
+                  <Flex alignItems="center" className="gap-[8px]">
+                    {list.icon}
+                    <Text className="md:text-[20px]">{list.desc}</Text>
+                  </Flex>
+                </Button>
+              </li>
+            );
+          })}
         </ul>
       </Flex>
 
@@ -121,7 +253,7 @@ function Header() {
       <Flex
         justifyContent="between"
         backgroundColor="secondary"
-        className={`hidden lg:flex px-6 py-4 w-[280px] h-screen shadow-[${colors.primary}] shadow-xl`}
+        className={`hidden lg:flex px-6 py-4 w-[370px] h-screen shadow-[${colors.primary}] shadow-xl`}
         direction="column"
       >
         <Flex direction="column" className="gap-[28px]">
@@ -135,7 +267,7 @@ function Header() {
           >
             <Text
               bold
-              className="text-[32px] text-shadow-sm text-shadow-black/40"
+              className="text-white text-[32px] text-shadow-sm text-shadow-black/40"
             >
               e-Chart
             </Text>
@@ -144,24 +276,42 @@ function Header() {
               alt="Logo"
               className="w-[220px] rounded-[120px] bg-white"
             />
-            <Text semibold className="text-[24px]">
-              ยินดีต้อนรับ
-              <br />
-              username
+            <Text semibold className="text-white text-[24px]">
+              {users}
             </Text>
+            <Flex alignItems="center" className="gap-[8px]">
+              <Text className="text-white ">บทบาท:</Text>
+              {roleName === "Administrator" ? (
+                <Select
+                  name="role"
+                  options={roleOptions}
+                  value={selectedRole}
+                  onChange={(v) => setSelectedRole(v as string)}
+                />
+              ) : (
+                <Text>{roleName}</Text>
+              )}
+            </Flex>
           </Flex>
           <ul className={`flex flex-col gap-[16px] hover:cursor-pointer`}>
             {navbarList.map((list, index) => {
               if (list.desc === "ลงชื่อออก") return null;
+              const realIndex = allFeatures.findIndex(
+                (item) => item.desc === list.desc
+              );
               return (
                 <li
                   key={index}
-                  className="p-2 rounded-lg transition-all transform duration-200 hover:bg-[#7C22B4]"
-                  onClick={handleSignout}
+                  className={`py-2 px-1 rounded-lg transition-all transform duration-200 hover:bg-[#7C22B4] ${
+                    activeNavIndex === realIndex
+                      ? "bg-[#7C22B4] text-white"
+                      : ""
+                  }`}
+                  onClick={() => handleNavbarClick(realIndex, list.func)}
                 >
                   <Flex className={`gap-[8px]`}>
                     {list.icon}
-                    <Text medium className="text-[20px]">
+                    <Text medium className="text-white text-[20px]">
                       {list.desc}
                     </Text>
                   </Flex>
@@ -177,13 +327,18 @@ function Header() {
           >
             <Flex className="gap-[8px]" onClick={handleSignout}>
               <LogoutIcon />
-              <Text medium className="text-[20px]">
+              <Text medium className="text-white text-[20px]">
                 ลงชื่อออก
               </Text>
             </Flex>
           </Flex>
         </Flex>
       </Flex>
+
+      {modalOn && !error && (
+        <SuccessModal message="ลงชื่อออกสำเร็จ" isVisible={modalOn} />
+      )}
+      {modalOn && !!error && <ErrorModal message={error} isVisible={modalOn} />}
     </>
   );
 }

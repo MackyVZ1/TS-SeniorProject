@@ -28,40 +28,40 @@ services:
     depends_on:
       - mysql-server
 
-  nestjs-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nestjs-server
-    restart: always
-    ports:
-      - '3000:3000'
-    environment:
-      DB_HOST: mysql-server
-      DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: JeKnyUoHOJe9JnV
-      DB_NAME: dentnu
-      JWT_ADMIN_KEY: bdc04ec187be73bdbfa85038282d7b2866453845ef0495604275e069f333dc54
-      JWT_APPOINTMENT_KEY: 3c8204d5233b7ad0e2401145a96c5555e59a03c5700f674ac48a36f265ceaa59
-      JWT_PAYMENT_KEY: 10487181b3ec6e8b4ce0d62987626f76b8aeaff7d68d6d1c82971868efcf0d92
-      JWT_MEDICALRECORD_KEY: 64845f30a7db392b260ffe2796f876daab33adab8b7c527f174e5be6d67b33c7
-      JWT_TEACHER_KEY: ca9c4308df86abed687a102ec27ee0639c5d835634584eea9b1da86248c22397
-      JWT_BACHELOR_KEY: 2880bf1487889a5fc0ddc3043daa1ba2ca8bfb6469b3c584c7e69170e25658c2
-      JWT_DRUG_KEY: b052d264f46f8852ebba8378008e9ff46cd4083fd6a2b4015f3ecb2b763476bb
-      JWT_GENERAL_KEY: d5c18bb9b901bef4b4050295088c9d1434a6f7b9de2afe7502ddf2cb34addacb
-      JWT_MASTER_KEY: b0d46cfb9078b4a28aea9f9a39ff7e2cf2d6480b112bded2b01cdc356a0ead7c
-      JWT_REQUIREMENTDIAG_KEY: 54af71659ebc2307d816ee17cdaa792887c6e8443f4c03cd4e266fc0a0c235ff
-      JWT_HEADASSISTANTDENTIST_KEY: 3b9e1c1afa4aa2f303a6b512fd60375f7c5d2d9a19c015a79e536c419748d9d1
-      JWT_ASSISTANTDENTIST_KEY: befd8e08c7a3035f35c93e75103fb21e1d7fc8017ae1d5d324c8ca05487fe1a2
-      PORT: 3000
-    depends_on:
-      - mysql-server
-    networks:
-      - app-network
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+  # nestjs-app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: nestjs-server
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     DB_HOST: mysql-server
+  #     DB_PORT: 3306
+  #     DB_USERNAME: root
+  #     DB_PASSWORD: JeKnyUoHOJe9JnV
+  #     DB_NAME: dentnu
+  #     JWT_ADMIN_KEY: bdc04ec187be73bdbfa85038282d7b2866453845ef0495604275e069f333dc54
+  #     JWT_APPOINTMENT_KEY: 3c8204d5233b7ad0e2401145a96c5555e59a03c5700f674ac48a36f265ceaa59
+  #     JWT_PAYMENT_KEY: 10487181b3ec6e8b4ce0d62987626f76b8aeaff7d68d6d1c82971868efcf0d92
+  #     JWT_MEDICALRECORD_KEY: 64845f30a7db392b260ffe2796f876daab33adab8b7c527f174e5be6d67b33c7
+  #     JWT_TEACHER_KEY: ca9c4308df86abed687a102ec27ee0639c5d835634584eea9b1da86248c22397
+  #     JWT_BACHELOR_KEY: 2880bf1487889a5fc0ddc3043daa1ba2ca8bfb6469b3c584c7e69170e25658c2
+  #     JWT_DRUG_KEY: b052d264f46f8852ebba8378008e9ff46cd4083fd6a2b4015f3ecb2b763476bb
+  #     JWT_GENERAL_KEY: d5c18bb9b901bef4b4050295088c9d1434a6f7b9de2afe7502ddf2cb34addacb
+  #     JWT_MASTER_KEY: b0d46cfb9078b4a28aea9f9a39ff7e2cf2d6480b112bded2b01cdc356a0ead7c
+  #     JWT_REQUIREMENTDIAG_KEY: 54af71659ebc2307d816ee17cdaa792887c6e8443f4c03cd4e266fc0a0c235ff
+  #     JWT_HEADASSISTANTDENTIST_KEY: 3b9e1c1afa4aa2f303a6b512fd60375f7c5d2d9a19c015a79e536c419748d9d1
+  #     JWT_ASSISTANTDENTIST_KEY: befd8e08c7a3035f35c93e75103fb21e1d7fc8017ae1d5d324c8ca05487fe1a2
+  #     PORT: 3000
+  #   depends_on:
+  #     - mysql-server
+  #   networks:
+  #     - app-network
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
 
 networks:
   app-network:

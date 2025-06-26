@@ -5,4 +5,8 @@ export const colors = {
   black: "#000000",
   purple: "#E3C4F6",
   pink: "#CB91EF",
+  placeholder: "#AFAFAF",
+  grey: "#848484",
+  red: "#C41F1F",
+  yellow: "#DEA344",
 } as const;

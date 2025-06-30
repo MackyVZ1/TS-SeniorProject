@@ -4,12 +4,13 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { tbdentaluserecord } from 'src/tbdentaluserrecord/entities/tbdentaluserrecord.entity';
+import { tbdentaluserrecord } from 'src/tbdentaluserrecord/entities/tbdentaluserrecord.entity';
+import { TbdentaluserrecordService } from 'src/tbdentaluserrecord/tbdentaluserrecord.service';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([tbdentaluserecord]),
+    TypeOrmModule.forFeature([tbdentaluserrecord]),
     JwtModule.register({
       global: true,
 
@@ -17,6 +18,6 @@ import { tbdentaluserecord } from 'src/tbdentaluserrecord/entities/tbdentaluserr
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, TbdentaluserrecordService],
 })
 export class AuthModule {}

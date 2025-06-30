@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { colors } from "../theme/theme";
 
 type TextVariant =
   | "body1"
@@ -12,10 +11,7 @@ type TextVariant =
   | "h5"
   | "h6";
 
-type ThemeColor = keyof typeof colors;
-
 interface Props {
-  color?: ThemeColor;
   size?: number | string;
   variant?: TextVariant;
   extrabold?: boolean;
@@ -26,7 +22,6 @@ interface Props {
   children?: ReactNode;
 }
 function Text({
-  color,
   variant,
   extrabold,
   bold,
@@ -74,23 +69,6 @@ function Text({
     }
   } else {
     classes.push("text-base");
-  }
-
-  // Color
-  if (color) {
-    if (typeof color === "string" && colors.hasOwnProperty(color)) {
-      customStyle.color = colors[color as keyof typeof colors];
-    } else if (typeof color === "string") {
-      if (
-        color.startsWith("#") ||
-        color.startsWith("rgb") ||
-        color.startsWith("hsl")
-      ) {
-        customStyle.color = color;
-      }
-    }
-  } else {
-    customStyle.color = "white";
   }
 
   const allClasses = classes.join(" ") + (className ? ` ${className}` : "");

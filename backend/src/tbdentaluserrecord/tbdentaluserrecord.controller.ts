@@ -8,11 +8,12 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TbdentaluserrecordService } from './tbdentaluserrecord.service';
 import { CreateTbdentaluserrecordDto } from './dto/create-tbdentaluserrecord.dto';
 import { UpdateTbdentaluserrecordDto } from './dto/update-tbdentaluserrecord.dto';
-import { tbdentaluserecord } from './entities/tbdentaluserrecord.entity';
+import { tbdentaluserrecord } from './entities/tbdentaluserrecord.entity';
 import {
   ApiTags,
   ApiOperation,
@@ -29,14 +30,14 @@ import {
   ApiBearerAuth,
   ApiUnauthorizedResponse,
   ApiForbiddenResponse,
+  ApiCreatedResponse,
 } from '@nestjs/swagger';
 import { Roles, ROLES } from 'src/utils/auth/role.decorator';
 import { RolesGuard } from 'src/utils/auth/role.guard';
-import { User } from 'src/utils/auth/user.decorator';
 
 @ApiTags('tbdentalrecorduser')
 @ApiBearerAuth()
-@ApiExtraModels(tbdentaluserecord)
+@ApiExtraModels(tbdentaluserrecord)
 @Controller('tbdentalrecorduser')
 @UseGuards(RolesGuard)
 @Roles(ROLES.ADMIN)
@@ -49,7 +50,7 @@ export class TbdentaluserrecordController {
   @ApiBody({
     type: CreateTbdentaluserrecordDto,
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Create a user success',
     schema: {
       type: 'object',
@@ -117,13 +118,10 @@ export class TbdentaluserrecordController {
     },
   })
   @ApiInternalServerErrorResponse({
-    description: 'Failed to user',
+    description: 'Failed to create a user',
   })
   @Post()
-  create(
-    @Body() createTbdentaluserrecordDto: CreateTbdentaluserrecordDto,
-    @User() currentUser: any,
-  ) {
+  create(@Body() createTbdentaluserrecordDto: CreateTbdentaluserrecordDto) {
     return this.tbdentaluserrecordService.create(createTbdentaluserrecordDto);
   }
 
@@ -145,6 +143,27 @@ export class TbdentaluserrecordController {
     description: 'Number of records per page (min: 1, max: 100)',
     example: 10,
   })
+  @ApiQuery({
+    name: 'keyword',
+    required: false,
+    type: String,
+    description: 'Search keyword for first name or last name',
+    example: 'John',
+  })
+  @ApiQuery({
+    name: 'roleId',
+    required: false,
+    type: Number,
+    description: 'Filter by role ID',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'clinicId',
+    required: false,
+    type: String,
+    description: 'Filter by clinic ID',
+    example: '1',
+  })
   @ApiOkResponse({
     description: 'Return all dental user records',
     schema: {
@@ -155,32 +174,45 @@ export class TbdentaluserrecordController {
           items: {
             type: 'object',
             properties: {
-              userId: { type: 'number', example: 1 },
               license: { type: 'string', example: 'DEN12345' },
               fName: { type: 'string', example: 'John' },
               lName: { type: 'string', example: 'Smith' },
               studentID: { type: 'string', example: 'STU001' },
               roleID: { type: 'number', example: 1 },
-              users: { type: 'string', example: 'john_dentist' },
               tName: { type: 'string', example: 'Dr.' },
-              sort: { type: 'number', example: 1 },
-              type: { type: 'string', example: 'dentist' },
-              clinicid: { type: 'number', example: 101 },
             },
           },
         },
+        total: { type: 'number', example: 100 },
+        page: { type: 'number', example: 1 },
+        pageCount: { type: 'number', example: 10 },
       },
     },
   })
-  // @ApiBadRequestResponse({
-  //   description: 'Invalid pagination parameters.',
-  // })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
+  })
   @ApiInternalServerErrorResponse({
-    description: 'Failed to fetch users.',
+    description: 'Failed to fetch dental user records',
   })
   @Get()
-  findAll() {
-    return this.tbdentaluserrecordService.findAll();
+  findAll(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('keyword') keyword?: string,
+    @Query('roleId') roleId?: number,
+    @Query('clinicId') clinicId?: string,
+  ) {
+    return this.tbdentaluserrecordService.findAll(
+      page,
+      limit,
+      keyword,
+      roleId,
+      clinicId,
+    );
   }
 
   @ApiOperation({
@@ -234,7 +266,7 @@ export class TbdentaluserrecordController {
   })
   @Get(':userId')
   findOne(@Param('userId', ParseIntPipe) userId: number) {
-    return this.tbdentaluserrecordService.findฺById(userId);
+    return this.tbdentaluserrecordService.findById(userId);
   }
 
   @ApiOperation({
@@ -253,7 +285,7 @@ export class TbdentaluserrecordController {
   @ApiResponse({
     status: 200,
     description: 'The dental user record has been successfully updated',
-    type: tbdentaluserecord,
+    type: tbdentaluserrecord,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized - Bearer token is missing or invalid',

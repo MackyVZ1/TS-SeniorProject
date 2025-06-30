@@ -1,13 +1,10 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   HttpException,
   HttpStatus,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/create-auth.dto';
@@ -33,17 +30,22 @@ export class AuthController {
           properties: {
             token: {
               type: 'string',
+              description: 'JWT authentication token',
               example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
             },
             user: {
               type: 'object',
               properties: {
-                userId: { type: 'number', example: 1 },
-                users: { type: 'string', example: 'inwza007' },
-                fName: { type: 'string', example: 'สมชาย' },
-                lName: { type: 'string', example: 'ไว้จอน' },
-                roleID: { type: 'number', example: 1 },
-                status: { type: 'number', example: 1 },
+                roleID: {
+                  type: 'number',
+                  description: 'User role ID',
+                  example: 1,
+                },
+                users: {
+                  type: 'string',
+                  description: 'Username',
+                  example: 'admin',
+                },
               },
             },
           },
@@ -52,26 +54,17 @@ export class AuthController {
     },
   })
   @ApiResponse({
-    status: 401,
-    description: 'Invalid credentials',
-    schema: {
-      type: 'object',
-      properties: {
-        success: { type: 'boolean', example: false },
-        message: { type: 'string', example: 'Invalid username or password' },
-      },
-    },
+    status: 400,
+    description:
+      'Username and password should not be empty., Username should not be empty., Password should not be empty.',
   })
   @ApiResponse({
-    status: 403,
-    description: 'Account is disabled',
-    schema: {
-      type: 'object',
-      properties: {
-        success: { type: 'boolean', example: false },
-        message: { type: 'string', example: 'Account is disabled' },
-      },
-    },
+    status: 404,
+    description: 'User not found.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
   })
   async login(@Body() loginDto: LoginDto) {
     try {
@@ -93,5 +86,37 @@ export class AuthController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Post('logout')
+  @ApiOperation({ summary: 'User logout' })
+  @ApiResponse({
+    status: 200,
+    description: 'Logout successful',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'Logout successful' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid or expired token',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Token not found.',
+  })
+  async logout(@Headers('authorization') authHeader: string) {
+    const token = authHeader?.split(' ')[1];
+    if (!token) {
+      throw new HttpException(
+        { success: false, message: 'No token provided' },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    return await this.authService.logout(token);
   }
 }

@@ -1,5 +1,10 @@
 import { colors } from "../../theme/theme";
 
+interface Props {
+  color?: keyof typeof colors;
+}
+
+// *** Header ***
 export function HamburgerIcon() {
   return (
     <svg
@@ -36,7 +41,7 @@ export function HamburgerIcon() {
   );
 }
 
-export function CloseIcon() {
+export function CloseIcon({ color }: Props) {
   return (
     <svg
       width="27"
@@ -47,19 +52,19 @@ export function CloseIcon() {
     >
       <path
         d="M0 0H26.52V26.52H0V0Z"
-        fill={colors.primary}
+        fill={color ?? colors.primary}
         fillOpacity="0.01"
       />
       <path
         d="M4.41992 4.42041L22.0999 22.1004"
-        stroke={colors.primary}
+        stroke={color ?? colors.primary}
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M4.41992 22.1004L22.0999 4.42041"
-        stroke={colors.primary}
+        stroke={color ?? colors.primary}
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -68,7 +73,7 @@ export function CloseIcon() {
   );
 }
 
-export function SearchIcon() {
+export function SearchIcon({ color }: Props) {
   return (
     <svg
       width="130"
@@ -76,24 +81,29 @@ export function SearchIcon() {
       viewBox="0 0 130 130"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
     >
-      <path d="M0 0H129.14V129.14H0V0Z" fill="white" fillOpacity="0.01" />
+      <path
+        d="M0 0H129.14V129.14H0V0Z"
+        fill={color || "white"}
+        fillOpacity="0.01"
+      />
       <path
         d="M56.4988 102.236C81.7586 102.236 102.236 81.7586 102.236 56.4988C102.236 31.239 81.7586 10.7617 56.4988 10.7617C31.239 10.7617 10.7617 31.239 10.7617 56.4988C10.7617 81.7586 31.239 102.236 56.4988 102.236Z"
-        stroke="white"
+        stroke={color || "#A861D4"}
         strokeWidth="10.7617"
         strokeLinejoin="round"
       />
       <path
         d="M71.7176 38.5888C67.8227 34.6939 62.4419 32.2849 56.4985 32.2849C50.5551 32.2849 45.1742 34.6939 41.2791 38.5888"
-        stroke="white"
+        stroke={color || "#A861D4"}
         strokeWidth="10.7617"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M89.3809 89.3809L112.21 112.21"
-        stroke="white"
+        stroke={color || "#A861D4"}
         strokeWidth="10.7617"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -329,6 +339,269 @@ export function ReserveChartIcon() {
         d="M75.3317 48.4275V40.3562"
         stroke="#A861D4"
         strokeWidth="10.7617"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// Modal
+export function SuccessModalIcon() {
+  return (
+    <svg
+      width="247"
+      height="247"
+      viewBox="0 0 247 247"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[200px] h-[191px] md:w-[247px] md:h-[247px]"
+    >
+      <circle cx="123.5" cy="123.5" r="123.5" fill="#30EB62" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M54.75 123.5L73.1875 105.062L110.062 141.938L183.812 68.1875L202.25 86.625L110.062 178.812L54.75 123.5Z"
+        fill="white"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function ErrorModalIcon() {
+  return (
+    <svg
+      width="247"
+      height="247"
+      viewBox="0 0 247 247"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[200px] h-[191px] md:w-[247px] md:h-[247px]"
+    >
+      <circle cx="123.5" cy="123.5" r="123.5" fill="#FF4D4D" />
+      <path d="M37 35H214V212H37V35Z" fill="white" fillOpacity="0.01" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M59.125 75.5627L77.5625 57.1252L125.5 105.063L173.437 57.1252L191.875 75.5627L143.937 123.5L191.875 171.438L173.437 189.875L125.5 141.938L77.5625 189.875L59.125 171.438L107.062 123.5L59.125 75.5627Z"
+        fill="white"
+        stroke="white"
+        strokeWidth="10.233"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function VerifyModalIcon() {
+  return (
+    <svg
+      width="247"
+      height="247"
+      viewBox="0 0 247 247"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="123.5" cy="123.5" r="123.5" fill="#EBC630" />
+      <path
+        d="M152.07 88.4328C149.338 83.3157 145.06 79.052 139.76 75.9593C134.463 72.8803 128.069 71.0001 121.129 71.0001C112.574 70.9793 105.467 73.1752 100.103 76.2162C94.717 79.2464 92.3949 82.7745 92.3949 82.7745C91.4898 83.5483 90.9793 84.674 91.0006 85.8517C91.0251 87.031 91.5763 88.1379 92.5094 88.8733L99.9634 94.7554C101.483 95.9539 103.657 95.909 105.123 94.6496C105.123 94.6496 106.039 93.019 108.909 91.404C111.794 89.7996 115.535 88.5072 121.129 88.4899C126.007 88.4794 130.261 90.2731 133.164 92.7241C134.606 93.9383 135.683 95.2981 136.343 96.542C137.009 97.7961 137.252 98.8924 137.248 99.725C137.234 102.539 136.68 104.379 135.879 105.947C135.268 107.118 134.47 108.157 133.444 109.165C131.912 110.674 129.835 112.068 127.504 113.35C125.171 114.648 122.657 115.789 120.116 117.168C117.217 118.75 114.148 121.022 111.881 124.433C110.75 126.119 109.866 128.047 109.305 130.082C108.736 132.119 108.479 134.254 108.479 136.433C108.479 138.757 108.479 140.665 108.479 140.665C108.479 142.856 110.282 144.632 112.506 144.632H122.206C124.43 144.632 126.233 142.856 126.233 140.665C126.233 140.665 126.233 138.757 126.233 136.433C126.233 135.593 126.33 135.052 126.423 134.708C126.583 134.195 126.673 134.067 126.935 133.754C127.203 133.458 127.743 133.003 128.74 132.46C130.196 131.654 132.535 130.564 135.185 129.154C139.151 127.017 143.974 124.117 148.041 119.331C150.063 116.943 151.852 114.067 153.086 110.754C154.331 107.441 155.003 103.716 155 99.725C154.996 95.6815 153.884 91.8411 152.07 88.4328Z"
+        fill="white"
+      />
+      <path
+        d="M117.36 154.07C111.312 154.07 106.409 158.902 106.409 164.859C106.409 170.814 111.312 175.645 117.36 175.645C123.404 175.645 128.305 170.814 128.305 164.859C128.305 158.902 123.404 154.07 117.36 154.07Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
+export function DashboardIcon() {
+  return (
+    <svg
+      width="130"
+      height="129"
+      viewBox="0 0 130 129"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M22.8685 111.306C12.0861 100.682 5.41699 86.0058 5.41699 69.795C5.41699 37.3731 32.0933 11.0901 65.0003 11.0901C97.9074 11.0901 124.584 37.3731 124.584 69.795C124.584 86.0058 117.915 100.682 107.132 111.306"
+        stroke="white"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M38.1885 96.2108C31.327 89.4504 27.083 80.111 27.083 69.7949C27.083 49.1628 44.0588 32.4373 64.9997 32.4373"
+        stroke="white"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M65 69.795V48.4478"
+        stroke="white"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function RoomIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="800px"
+      height="800px"
+      viewBox="0 0 512 512"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        fill="var(--ci-primary-color, #FFFFFF)"
+        d="M440,424V88H352V13.005L88,58.522V424H16v32h86.9L352,490.358V120h56V456h88V424ZM320,453.642,120,426.056V85.478L320,51Z"
+        className="ci-primary"
+      />
+      <rect
+        width="32"
+        height="64"
+        x="256"
+        y="232"
+        fill="var(--ci-primary-color, #FFFFFF)"
+        className="ci-primary"
+      />
+    </svg>
+  );
+}
+
+export function DeleteIcon() {
+  return (
+    <svg
+      width="130"
+      height="130"
+      viewBox="0 0 130 130"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M24.375 27.0833V119.167H105.625V27.0833H24.375Z"
+        stroke="white"
+        strokeWidth="8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M54.166 54.1665V89.3748"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M75.833 54.1665V89.3748"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.833 27.0833H119.166"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M43.333 27.0833L52.2407 10.8333H77.9377L86.6663 27.0833H43.333Z"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function AddIcon() {
+  return (
+    <svg
+      width="130"
+      height="130"
+      viewBox="0 0 130 130"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M64.9997 119.167C94.9151 119.167 119.166 94.9154 119.166 64.9999C119.166 35.0845 94.9151 10.8333 64.9997 10.8333C35.0842 10.8333 10.833 35.0845 10.833 64.9999C10.833 94.9154 35.0842 119.167 64.9997 119.167Z"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M65 43.3333V86.6666"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M43.333 65H86.6663"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function EditIcon() {
+  return (
+    <svg
+      width="130"
+      height="130"
+      viewBox="0 0 130 130"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M18.9585 113.75H116.458"
+        stroke="white"
+        strokeWidth="6.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M29.792 72.3664V92.0833H49.6094L105.625 36.0428L85.8412 16.25L29.792 72.3664Z"
+        stroke="white"
+        strokeWidth="6.33333"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function SaveIcon() {
+  return (
+    <svg
+      width="147"
+      height="147"
+      viewBox="0 0 147 147"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M104.125 128.625V79.625H42.875V128.625M42.875 18.375V49H91.875M116.375 128.625H30.625C27.3761 128.625 24.2603 127.334 21.9629 125.037C19.6656 122.74 18.375 119.624 18.375 116.375V30.625C18.375 27.3761 19.6656 24.2603 21.9629 21.9629C24.2603 19.6656 27.3761 18.375 30.625 18.375H98L128.625 49V116.375C128.625 119.624 127.334 122.74 125.037 125.037C122.74 127.334 119.624 128.625 116.375 128.625Z"
+        stroke="#F3F3F3"
+        strokeWidth="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

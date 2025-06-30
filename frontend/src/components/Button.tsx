@@ -10,6 +10,7 @@ interface Props {
   style?: React.CSSProperties;
   children?: ReactNode;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
 }
 
 function Button({
@@ -19,9 +20,10 @@ function Button({
   style,
   children,
   onClick,
+  disabled,
 }: Props) {
   const classes: string[] = [
-    `bg-[#7C22B4] px-8 py-4 rounded-2xl transition-all transform duration-300 text-white text-base
+    `flex justify-center items-center bg-[#7C22B4] px-3 py-4 rounded-2xl transition-all transform duration-300 text-white text-base gap-2 
     hover:cursor-pointer hover:bg-[#7C22B4]/70
     `,
   ];
@@ -45,6 +47,7 @@ function Button({
       className={allClasses}
       style={{ ...customStyle, ...style }}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

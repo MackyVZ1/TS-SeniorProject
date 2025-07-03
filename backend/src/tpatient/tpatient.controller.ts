@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TpatientService } from './tpatient.service';
 import { CreateTpatientDto } from './dto/create-tpatient.dto';
@@ -13,6 +14,7 @@ import { UpdateTpatientDto } from './dto/update-tpatient.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiCreatedResponse,
   ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -21,27 +23,39 @@ import {
   ApiParam,
   ApiQuery,
   ApiTags,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiConflictResponse,
 } from '@nestjs/swagger';
 import { t_patient } from './entities/tpatient.entity';
+import { RolesGuard } from 'src/utils/auth/role.guard';
+import { ROLES, Roles } from 'src/utils/auth/role.decorator';
 
 @ApiTags('tpatient')
+@ApiBearerAuth()
 @ApiExtraModels(t_patient)
 @Controller('patient')
+@UseGuards(RolesGuard)
+@Roles(ROLES.ADMIN)
+@Roles(ROLES.MEDICALRECORD)
 export class TpatientController {
   constructor(private readonly tpatientService: TpatientService) {}
 
-  @ApiOperation({ summary: 'ADMIN', description: 'สร้างคนไข้' })
+  //POST /api/patient ADMIN
+  @ApiOperation({ 
+    summary: 'ADMIN', 
+    description: 'สร้างคนไข้' 
+  })
   @ApiBody({
     type: CreateTpatientDto,
   })
-  @ApiOkResponse({
-    description: 'Create a patient success.',
+  @ApiCreatedResponse({
+    description: 'Create a patient success',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        message: { type: 'string', example: 'Create a patient success' },
       },
     },
   })
@@ -55,36 +69,69 @@ export class TpatientController {
           type: 'array',
           items: { type: 'string' },
           example: [
-            'DN required.',
-            'EN title required.',
-            'EN name required.',
-            'EN surname required.',
-            'Sex required.',
-            'Marital Status required.',
-            'Age required.',
-            'Occupation required.',
-            'Phone Office required.',
-            'Emergency Contact required.',
-            'Emergency Address required.',
-            'Parent required.',
-            'Parent phone required.',
-            'Physician required.',
-            'Phhysician phone required.',
-            'Other Address required.',
+            'DN required',
+            'EN title required',
+            'EN name required',
+            'EN surname required',
+            'Sex required',
+            'Marital Status required',
+            'Age required',
+            'Occupation required',
+            'Phone Office required',
+            'Emergency Contact required',
+            'Emergency Address required',
+            'Parent required',
+            'Parent phone required',
+            'Physician required',
+            'Phhysician phone required',
+            'Other Address required',
           ],
         },
         error: { type: 'string', example: 'Bad Request' },
       },
     },
   })
-  @ApiInternalServerErrorResponse({
-    description: 'Failed to create a patient.',
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+      description: 'Forbidden - Admin role required',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: { type: 'number', example: 403 },
+          message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+          error: { type: 'string', example: 'Forbidden' },
         },
+      },
+    })
+  @ApiConflictResponse({
+      description: 'Patient name already exists',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: { type: 'number', example: 409 },
+          message: { type: 'string', example: 'Patient name already exists' },
+          error: { type: 'string', example: 'Conflict' },
+        },
+      },
+    })
+  @ApiInternalServerErrorResponse({
+    description: 'Failed to create a patient',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to create a patient' },
+        error: { type: 'string', example: 'Internal Server Error' },
       },
     },
   })
@@ -93,6 +140,7 @@ export class TpatientController {
     return this.tpatientService.create(dto);
   }
 
+  //GET /api/patient ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'ดึงข้อมูลคนไข้ทั้งหมด',
@@ -133,11 +181,45 @@ export class TpatientController {
       ],
     },
   })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        error: { type: 'string', example: 'Forbidden' },
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Failed to fetch patient data',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to fetch patient data' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
+  })
   @Get()
   findAll() {
     return this.tpatientService.findAll();
   }
 
+  //GET /api/patient/{dn} ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'ดึงข้อมูลคนไข้ด้วย ID',
@@ -171,35 +253,57 @@ export class TpatientController {
     },
   })
   @ApiBadRequestResponse({
-    description: 'DN required.',
+    description: 'Validation errors',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: 'DN required' },
+        error: { type: 'string', example: 'Bad Request' },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        error: { type: 'string', example: 'Forbidden' },
       },
     },
   })
   @ApiNotFoundResponse({
-    description: 'A patient not found.',
+    description: 'A patient not found',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'A patient not found' },
+        error: { type: 'string', example: 'Not Found' },
       },
     },
   })
   @ApiInternalServerErrorResponse({
-    description: 'Failed to fetch a patient.',
+    description: 'Failed to fetch patient data',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to fetch patient data' },
+        error: { type: 'string', example: 'Internal Server Error' },
       },
     },
   })
@@ -208,6 +312,7 @@ export class TpatientController {
     return this.tpatientService.findOne(dn);
   }
 
+  //PATCH /api/patient/{dn} ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'อัพเดทข้อมูลคนไข้ด้วย DN',
@@ -222,38 +327,39 @@ export class TpatientController {
     type: UpdateTpatientDto,
   })
   @ApiOkResponse({
+    description: 'Patient information update successful',
     type: t_patient,
   })
   @ApiBadRequestResponse({
-    description: 'DN required.',
+    description: 'Validation errors',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: 'DN required' },
+        error: { type: 'string', example: 'Bad Request' },
       },
     },
   })
   @ApiNotFoundResponse({
-    description: 'A patient not found.',
+    description: 'A patient not found',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'A patient not found' },
+        error: { type: 'string', example: 'Not Found' },
       },
     },
   })
   @ApiInternalServerErrorResponse({
-    description: 'Failed to update a patient.',
+    description: 'Failed to update a patient',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to update a patient' },
+        error: { type: 'string', example: 'Internal Server Error' },
       },
     },
   })
@@ -265,6 +371,7 @@ export class TpatientController {
     return this.tpatientService.update(dn, updateTpatientDto);
   }
 
+  //DELETE /api/patient/{dn} ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'ลบคนไข้ด้วย DN',
@@ -276,35 +383,34 @@ export class TpatientController {
     example: '000001',
   })
   @ApiOkResponse({
-    description: 'A patient is deleted.',
+    description: 'Patient DN:{DN} is deleted successfully',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        message: { type: 'string', example: 'Dental user deleted successfully', },
+        deletedDN: { type: 'string', example: '000001', },
       },
     },
   })
   @ApiNotFoundResponse({
-    description: 'A patient not found.',
+    description: 'A patient not found',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'A patient not found' },
+        error: { type: 'string', example: 'Not Found' },
       },
     },
   })
   @ApiInternalServerErrorResponse({
-    description: 'Failed to delete a patient.',
+    description: 'Failed to delete a patient',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to delete a patient' },
+        error: { type: 'string', example: 'Internal Server Error' },
       },
     },
   })

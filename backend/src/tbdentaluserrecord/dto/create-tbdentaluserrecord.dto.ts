@@ -72,7 +72,7 @@ export class CreateTbdentaluserrecordDto {
   passw: string;
 
   @ApiPropertyOptional({
-    description: 'อะไรวะเนี้ย',
+    description: 'คำนำหน้าชื่อ',
   })
   @IsOptional()
   @IsString()

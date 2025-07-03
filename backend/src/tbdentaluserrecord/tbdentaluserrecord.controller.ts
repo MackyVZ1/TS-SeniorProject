@@ -46,7 +46,11 @@ export class TbdentaluserrecordController {
     private readonly tbdentaluserrecordService: TbdentaluserrecordService,
   ) {}
 
-  @ApiOperation({ summary: 'ADMIN', description: 'สร้างผู้ใช้งานระบบทันตกรรม' })
+  //POST /api/tbdentalrecorduser ADMIN
+  @ApiOperation({ 
+    summary: 'ADMIN', 
+    description: 'สร้างผู้ใช้งานระบบทันตกรรม' 
+  })
   @ApiBody({
     type: CreateTbdentaluserrecordDto,
   })
@@ -55,9 +59,7 @@ export class TbdentaluserrecordController {
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-        },
+        message: { type: 'string', example: 'Create a user success' },
       },
     },
   })
@@ -78,10 +80,7 @@ export class TbdentaluserrecordController {
       type: 'object',
       properties: {
         statusCode: { type: 'number', example: 403 },
-        message: {
-          type: 'string',
-          example: 'Access denied. Required roles: admin. User role: teacher',
-        },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
         error: { type: 'string', example: 'Forbidden' },
       },
     },
@@ -96,10 +95,10 @@ export class TbdentaluserrecordController {
           type: 'array',
           items: { type: 'string' },
           example: [
-            'Firstname required.',
-            'Lastname required.',
-            'Username required.',
-            'Password required.',
+            'Firstname required',
+            'Lastname required',
+            'Username required',
+            'Password required',
           ],
         },
         error: { type: 'string', example: 'Bad Request' },
@@ -119,12 +118,21 @@ export class TbdentaluserrecordController {
   })
   @ApiInternalServerErrorResponse({
     description: 'Failed to create a user',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to create a user' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
   })
   @Post()
   create(@Body() createTbdentaluserrecordDto: CreateTbdentaluserrecordDto) {
     return this.tbdentaluserrecordService.create(createTbdentaluserrecordDto);
   }
 
+  //GET /api/tbdentalrecorduser ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'ดึงข้อมูลผู้ใช้งานทั้งหมดในระบบทันตกรรม',
@@ -191,19 +199,43 @@ export class TbdentaluserrecordController {
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        error: { type: 'string', example: 'Forbidden' },
+      },
+    },
   })
   @ApiInternalServerErrorResponse({
     description: 'Failed to fetch dental user records',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to fetch dental user records' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
   })
   @Get()
   findAll(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('keyword') keyword?: string,
-    @Query('roleId') roleId?: number,
+    @Query('roleId', ParseIntPipe) roleId?: number,
     @Query('clinicId') clinicId?: string,
   ) {
     return this.tbdentaluserrecordService.findAll(
@@ -215,13 +247,14 @@ export class TbdentaluserrecordController {
     );
   }
 
+  //GET /api/tbdentalrecorduser/{userId} ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'ดึงข้อมูลผู้ใช้งานในระบบทันตกรรมด้วย ID',
   })
   @ApiParam({
     name: 'userId',
-    type: 'string',
+    type: 'number',
     description: 'ID ผู้ใช้งาน',
     example: 1,
   })
@@ -245,7 +278,7 @@ export class TbdentaluserrecordController {
               tName: { type: 'string', example: 'Dr.' },
               sort: { type: 'number', example: 1 },
               type: { type: 'string', example: 'dentist' },
-              clinicid: { type: 'number', example: 101 },
+              clinicid: { type: 'string', example: '101' },
             },
           },
         },
@@ -254,50 +287,114 @@ export class TbdentaluserrecordController {
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        error: { type: 'string', example: 'Forbidden' },
+      },
+    },
   })
   @ApiNotFoundResponse({
-    description: 'User not found.',
+    description: 'Dental user record not found',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'Dental user record not found' },
+        error: { type: 'string', example: 'Not Found' },
+      },
+    },
   })
   @ApiInternalServerErrorResponse({
-    description: 'Failed to fetch a user.',
+    description: 'Failed to fetch a user',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to fetch a user' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
   })
   @Get(':userId')
   findOne(@Param('userId', ParseIntPipe) userId: number) {
     return this.tbdentaluserrecordService.findById(userId);
   }
 
+  //PATCH /api/tbdentalrecorduser/{userId} ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'อัพเดทข้อมูลผู้ใข้งานในระบบทันตกรรมด้วย ID',
   })
   @ApiParam({
     name: 'userId',
-    type: 'string',
+    type: 'number',
     description: 'ID ผู้ใช้งาน',
     example: '1',
   })
   @ApiBody({
     type: UpdateTbdentaluserrecordDto,
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'The dental user record has been successfully updated',
     type: tbdentaluserrecord,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        error: { type: 'string', example: 'Forbidden' },
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'Dental user record not found',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'Dental user record not found' },
+        error: { type: 'string', example: 'Not Found' },
+      },
+    },
   })
   @ApiInternalServerErrorResponse({
     description: 'Failed to update dental user',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to update dental user' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
   })
   @Patch(':userId')
   update(
@@ -310,44 +407,70 @@ export class TbdentaluserrecordController {
     );
   }
 
+  //DELETE /api/tbdentalrecorduser/{userId} ADMIN
   @ApiOperation({
     summary: 'ADMIN',
     description: 'ลบผู้ใข้งานในระบบทันตกรรมด้วย ID',
   })
   @ApiParam({
     name: 'userId',
-    type: 'string',
+    type: 'number',
     description: 'ID ผู้ใช้งาน',
     example: 1,
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'User ID:{ID} is deleted successfully',
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-          example: 'Dental user deleted successfully',
-        },
-        deletedId: {
-          type: 'string',
-          example: 1,
-        },
+        message: { type: 'string', example: 'Dental user deleted successfully', },
+        deletedId: { type: 'string', example: 1, },
       },
     },
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized - Bearer token is missing or invalid',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Authorization header is missing' },
+        error: { type: 'string', example: 'Unauthorized' },
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden - Admin role required',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 403 },
+        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        error: { type: 'string', example: 'Forbidden' },
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'Dental user not found',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'Dental user not found' },
+        error: { type: 'string', example: 'Not Found' },
+      },
+    },
   })
   @ApiInternalServerErrorResponse({
     description: 'Failed to delete dental user',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Failed to delete dental user' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
   })
   @Delete(':userId')
   remove(@Param('userId', ParseIntPipe) userId: number) {

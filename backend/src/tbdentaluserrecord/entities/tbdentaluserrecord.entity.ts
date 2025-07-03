@@ -74,8 +74,8 @@ export class tbdentaluserrecord {
   passw: string;
 
   @ApiPropertyOptional({
-    description: 'อะไรวะเนี้ย',
-    example: 'อะไรวะ',
+    description: 'คำนำหน้าชื่อ',
+    example: 'นาย',
   })
   @Column({ type: 'varchar', length: 45, nullable: true, default: null })
   tName?: string;

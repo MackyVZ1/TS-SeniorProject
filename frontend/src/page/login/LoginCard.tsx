@@ -56,7 +56,6 @@ function LoginCard() {
         users: values.username,
         passw: values.password,
       });
-      console.log(data);
 
       if (data) {
         const { token, user } = data;

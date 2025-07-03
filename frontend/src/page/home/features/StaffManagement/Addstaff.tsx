@@ -1,6 +1,6 @@
-import { CloseIcon } from "../../../../../assets/svg";
-import Flex from "../../../../../components/Flex";
-import Text from "../../../../../components/Text";
+import { CloseIcon } from "@/assets/svg";
+import Flex from "@/components/Flex";
+import Text from "@/components/Text";
 import Addstaffform from "./Addstaffform";
 
 type Staff = {
@@ -30,7 +30,7 @@ interface Props {
 function Addstaff({ onClose, onUserAdded, onEdit, staffData }: Props) {
   return (
     <Flex
-      className="fixed inset-0 z-50 bg-black/40  transform transition-all duration-300  p-6 lg:p-12 xl:p-36"
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transform transition-all duration-300  p-6 lg:p-12 xl:p-36"
       justifyContent="center"
       alignItems="center"
     >

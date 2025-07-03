@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import backgroundImg from "../../../assets/png/โลโก้มหาลัย.png";
-import Flex from "../../../components/Flex";
+import backgroundImg from "@/assets/png/โลโก้มหาลัย.png";
+import Flex from "@/components/Flex";
 
 interface Props {
   children: ReactNode;

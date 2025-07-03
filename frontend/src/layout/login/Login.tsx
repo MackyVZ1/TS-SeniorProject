@@ -1,10 +1,8 @@
-import DentLogo from "./component/DentLogo";
-import Flex from "../../components/Flex";
-import LoginCard from "./component/LoginCard";
-// import Background from "./Background";
+import DentLogo from "@/page/login/DentLogo";
+import Flex from "@/components/Flex";
+import LoginCard from "@/page/login/LoginCard";
 function Login() {
   return (
-    // <Background>
     <Flex
       justifyContent="center"
       alignItems="center"
@@ -14,7 +12,6 @@ function Login() {
       <DentLogo />
       <LoginCard />
     </Flex>
-    // </Background>
   );
 }
 

@@ -1,17 +1,40 @@
 import { useEffect, useState } from "react";
-import { DeleteIcon, EditIcon, SearchIcon } from "../../../../../assets/svg";
-import Button from "../../../../../components/Button";
-import Text from "../../../../../components/Text";
+import { DeleteIcon, EditIcon, SearchIcon } from "@/assets/svg";
+import Text from "@/components/Text";
 import axios from "axios";
-import Flex from "../../../../../components/Flex";
-import {
-  ErrorModal,
-  SuccessModal,
-  VerifyModal,
-} from "../../../../../components/Modal";
+import Flex from "@/components/Flex";
+import { ErrorModal, SuccessModal, VerifyModal } from "@/components/Modal";
 import Addstaff from "./Addstaff";
-import Input from "../../../../../components/Input";
-import Select from "../../../../../components/Select";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type Staff = {
   userId: string | null;
@@ -53,10 +76,10 @@ function getPagination(current: number, total: number) {
   return range;
 }
 
-function Stafftable({ onClose, refreshTrigger, onEdit }: Props) {
+function Stafftable({ onClose, refreshTrigger }: Props) {
   const [staffs, setStaffs] = useState<Staff[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [limit] = useState<number>(7);
+  const [limit] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
   const [pageCount, setPageCount] = useState<number>(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -128,6 +151,12 @@ function Stafftable({ onClose, refreshTrigger, onEdit }: Props) {
   const handleAfterEdit = () => {
     staffFetch();
     handleCloseEdit();
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= pageCount) {
+      setPage(newPage);
+    }
   };
 
   const handleRemoveStaff = async () => {
@@ -229,207 +258,202 @@ function Stafftable({ onClose, refreshTrigger, onEdit }: Props) {
 
   return (
     <>
-      <Flex className="gap-4">
+      <Flex direction="column" className="gap-4 lg:flex-row">
         <Flex
           alignItems="center"
-          className="p-2 border-[3px] border-[#A861D4] rounded-[3px] "
+          className="p-2 border-[3px] border-[#A861D4] rounded-[8px] w-full"
         >
           <SearchIcon />
           <Input
             name="search"
             value={keyword}
-            onChange={setKeyword}
-            autocomplete="off"
+            onChange={(e) => setKeyword(e.target.value)}
             placeholder="ชื่อ, นามสกุล"
-            className="focus:outline-none"
+            className="border-none focus:outline-none focus-visible:ring-0 shadow-none"
           />
         </Flex>
-        <Select
-          name="role"
-          options={roleOptions}
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(Number(e))}
-          className="border-[3px] border-[#A861D4] rounded-[12px] w-full p-4"
-        />
-        <Select
-          name="clinic"
-          options={clinincOptions}
-          value={clinicFilter}
-          onChange={(e) => setClinicFilter(e as string)}
-          className="border-[3px] border-[#A861D4] rounded-[12px] w-full p-4"
-        />
+        <Flex
+          alignItems="center"
+          className="p-2 border-[3px] border-[#A861D4] rounded-[8px] w-full"
+        >
+          <Select onValueChange={(e) => setRoleFilter(Number(e))}>
+            <SelectTrigger className="border-none w-full p-4 shadow-none">
+              <SelectValue placeholder="กรองด้วยบทบาท" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>บทบาท</SelectLabel>
+                {roleOptions.map((option, index) => (
+                  <SelectItem key={index} value={option.value.toString()}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </Flex>
+        <Flex
+          alignItems="center"
+          className="p-2 border-[3px] border-[#A861D4] rounded-[8px] w-full"
+        >
+          <Select onValueChange={setClinicFilter}>
+            <SelectTrigger className="border-none w-full p-4 shadow-none">
+              <SelectValue placeholder="กรองด้วยคลินิก" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>คลินิก</SelectLabel>
+                {clinincOptions.map((option, index) => (
+                  <SelectItem key={index} value={option.value.toString()}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </Flex>
       </Flex>
-      <div
-        className="h-full rounded-2xl border-2 border-[#A861D4] overflow-x-auto  flex justify-between flex-col"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        <table className=" w-full">
-          <thead>
-            <tr className="text-center">
-              <th className="p-4 bg-[#A861D4] ">
-                <Text
-                  medium
-                  className="text-white text-[14px] md:text-[16px] lg:text-[20px] md:whitespace-pre-line lg:whitespace-normal"
-                >
-                  userId
-                </Text>
-              </th>
-              <th className="p-4 bg-[#A861D4]">
-                <Text
-                  medium
-                  className="text-white text-[14px] md:text-[16px] lg:text-[20px]"
-                >
-                  ชื่อ - นามสกุล
-                </Text>
-              </th>
-              <th className="p-4 bg-[#A861D4]">
-                <Text
-                  medium
-                  className="text-white text-[14px] md:text-[16px] lg:text-[20px]"
-                >
-                  เลขใบประกอบวิชาชีพ
-                </Text>
-              </th>
-              <th className="p-4 bg-[#A861D4]">
-                <Text
-                  medium
-                  className="text-white text-[14px] md:text-[16px] lg:text-[20px]"
-                >
-                  ตำแหน่ง
-                </Text>
-              </th>
-              <th className="p-4 bg-[#A861D4]">
-                <Text
-                  medium
-                  className="text-white text-[14px] md:text-[16px] lg:text-[20px]"
-                >
-                  คลินิก
-                </Text>
-              </th>
-              <th className="p-4 bg-[#A861D4] w-[40px] ">
-                <Text
-                  medium
-                  className="text-white text-[14px] md:text-[16px] lg:text-[20px]"
-                >
-                  {" "}
-                </Text>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {staffs.map((staff, index) => (
-              <tr
-                key={index}
-                className={`${index % 2 === 0 ? "bg-purple-100" : "bg-white"}`}
-              >
-                <td className="p-4 text-center">
-                  <Text
-                    medium
-                    className=" text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
-                  >
-                    {staff.userId || "-"}
+
+      {/**Table */}
+      <div className="border-[3px] border-[#A861D4] rounded-2xl overflow-hidden">
+        <ScrollArea className="h-full">
+          <ScrollBar orientation="horizontal" />
+          <Table>
+            {/* Sticky Header */}
+            <TableHeader className="bg-[#A861D4] sticky top-0 z-10">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="p-4 min-w-[120px]">
+                  <Text className="text-white text-[24px]" semibold>
+                    userId
                   </Text>
-                </td>
-                <td>
-                  <Text className=" text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
-                    {staff.tName}
-                    {staff.fName} {staff.lName}
+                </TableHead>
+                <TableHead className="p-4 min-w-[200px]">
+                  <Text className="text-white text-[24px]" semibold>
+                    ชื่อ - นามสกุล
                   </Text>
-                </td>
-                <td className="text-center">
-                  <Text className=" text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
-                    {staff.license || "-"}
+                </TableHead>
+                <TableHead className="p-4 text-center min-w-[180px]">
+                  <Text className="text-white text-[24px]" semibold>
+                    เลขใบประกอบวิชาชีพ
                   </Text>
-                </td>
-                <td>
-                  <Text className=" text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
-                    {staff.roleName || "-"}
+                </TableHead>
+                <TableHead className="p-4 min-w-[150px]">
+                  <Text className="text-white text-[24px]" semibold>
+                    บทบาท
                   </Text>
-                </td>
-                <td className="text-center">
-                  <Text className=" text-[12px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
-                    {staff.clinicName || "-"}
+                </TableHead>
+                <TableHead className="p-4 text-center min-w-[150px]">
+                  <Text className="text-white text-[24px]" semibold>
+                    คลินิก
                   </Text>
-                </td>
-                <td className="text-center p-4 flex gap-3">
-                  <Button
-                    className="w-[46px] h-[44px] rounded-xl bg-[#DEA344] hover:bg-[#DEA344]/70"
-                    onClick={() => handleEdit(staff)}
-                  >
-                    <EditIcon />
-                  </Button>
-                  <Button
-                    className="w-[46px] h-[44px] rounded-xl bg-[#C41F1F] hover:bg-[#C41F1F]/70"
-                    onClick={() => handleModal(staff.userId)}
-                  >
-                    <DeleteIcon />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-center gap-2 py-2  items-center select-none lg:mb-4">
-          <Button
-            disabled={page === 1}
-            onClick={() => setPage(1)}
-            className={`bg-white  text-xl w-10 h-10 rounded-full disabled:opacity-50 disabled:cursor-default hover:bg-gray-200 ${
-              page === 1 && "hover:bg-white"
-            }`}
-          >
-            <Text className="text-black">{"<<"}</Text>
-          </Button>
-          <Button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className={`bg-white  text-xl w-10 h-10 rounded-full disabled:opacity-50 disabled:cursor-default hover:bg-gray-200 ${
-              page === 1 && "hover:bg-white"
-            }`}
-          >
-            <Text className="text-black">{"<"}</Text>
-          </Button>
-          {pagination.map((p, idx) =>
-            p === "..." ? (
-              <span key={idx} className="px-2 py-1 text-gray-400">
-                ...
-              </span>
-            ) : (
-              <Button
-                key={p}
-                onClick={() => setPage(Number(p))}
-                className={`w-10 h-10 rounded-full text-xl ${
-                  page === p
-                    ? "bg-[#7C22B4] text-white rounded-[84px]"
-                    : "bg-white text-[#AFAFAF] hover:bg-gray-200"
-                }`}
-                disabled={page === p}
-              >
-                <Text className={page === p ? "text-white" : "text-[#AFAFAF]"}>
-                  {p}
-                </Text>
-              </Button>
-            )
-          )}
-          <Button
-            disabled={page === pageCount}
-            onClick={() => setPage(page + 1)}
-            className={`bg-white w-10 h-10 rounded-full text-xl  disabled:opacity-50 disabled:cursor-default hover:bg-gray-200 ${
-              page === pageCount && "hover:bg-white"
-            }`}
-          >
-            <Text className="text-black">{">"}</Text>
-          </Button>
-          <Button
-            disabled={page === pageCount}
-            onClick={() => setPage(pageCount)}
-            className={`bg-white  text-xl w-10 h-10 rounded-full disabled:opacity-50 disabled:cursor-default hover:bg-gray-200 ${
-              page === pageCount && "hover:bg-white"
-            }`}
-          >
-            <Text className="text-black">{">>"}</Text>
-          </Button>
-        </div>
+                </TableHead>
+                <TableHead className="p-4 min-w-[120px]">
+                  <Text> </Text>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {staffs.map((staff, index) => (
+                <TableRow key={index}>
+                  <TableCell className="p-4">
+                    <Text className="lg:text-[20px]" semibold>
+                      {staff.userId}
+                    </Text>
+                  </TableCell>
+                  <TableCell className="p-4">
+                    <Text className="lg:text-[20px]">
+                      {staff.tName}
+                      {staff.fName} {staff.lName}
+                    </Text>
+                  </TableCell>
+                  <TableCell className="p-4 text-center">
+                    <Text className="lg:text-[20px]">
+                      {staff.license || "-"}
+                    </Text>
+                  </TableCell>
+                  <TableCell className="p-4">
+                    <Text className="lg:text-[20px]">{staff.roleName}</Text>
+                  </TableCell>
+                  <TableCell className="p-4 text-center">
+                    <Text className="lg:text-[20px]">
+                      {staff.clinicName || "-"}
+                    </Text>
+                  </TableCell>
+                  <TableCell className="p-4">
+                    <Flex justifyContent="center" className="gap-2">
+                      <Button
+                        className="bg-[#DEA344] hover:bg-[#DEA344]/70"
+                        onClick={() => handleEdit(staff)}
+                      >
+                        <EditIcon />
+                      </Button>
+                      <Button
+                        variant={"destructive"}
+                        onClick={() => handleModal(staff.userId)}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </Flex>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ScrollArea>
       </div>
+
+      {pageCount > 1 && (
+        <Flex justifyContent="center" className="mt-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(page - 1)}
+                  className={
+                    page <= 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+
+              {pagination.map((pageNum, index) => (
+                <PaginationItem key={index}>
+                  {pageNum === "..." ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      onClick={() => handlePageChange(Number(pageNum))}
+                      isActive={page === pageNum}
+                    >
+                      {pageNum}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => handlePageChange(page + 1)}
+                  className={
+                    page >= pageCount
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </Flex>
+      )}
+
+      {/* Show pagination info */}
+      <Flex justifyContent="center" className="mt-2">
+        <Text className="text-sm text-gray-600">
+          แสดง {(page - 1) * limit + 1} - {Math.min(page * limit, total)} จาก{" "}
+          {total} รายการ
+        </Text>
+      </Flex>
 
       {isEditMode && selectedStaff && (
         <Addstaff

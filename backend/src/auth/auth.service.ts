@@ -108,6 +108,7 @@ export class AuthService {
     return {
       token,
       user: {
+        roleId: user.roleID,
         roleName: user.role?.roleName ?? '',
         users: user.users,
       },

@@ -608,3 +608,142 @@ export function SaveIcon() {
     </svg>
   );
 }
+
+export function RightArrow() {
+  return (
+    <svg
+      width="172"
+      height="116"
+      viewBox="0 0 172 116"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M150.5 58H21.5"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M107.5 29L150.5 58L107.5 87"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function LeftArrow() {
+  return (
+    <svg
+      width="172"
+      height="116"
+      viewBox="0 0 172 116"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M21.5001 58L150.5 58"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M64.5 87L21.5 58L64.5 29"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function InfoIcon() {
+  return (
+    <svg
+      width="144"
+      height="145"
+      viewBox="0 0 144 145"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path
+        d="M43.0144 19.6986V3L40.4855 5.52884L5.52857 40.488L3 43.0146H19.7032C32.5556 43.0146 43.0144 32.5556 43.0144 19.6986Z"
+        fill="white"
+        stroke="#FDFCFC"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M138.363 119.959C138.363 119.959 127.767 110.692 125.232 108.163C121.512 104.46 120.027 102.676 121.338 99.6686C127.081 87.9552 125.095 73.4149 115.353 63.6747C103.104 51.4235 83.2379 51.4235 70.9887 63.6747C58.7394 75.9283 58.7394 95.7874 70.9887 108.039C80.7265 117.776 95.2754 119.763 106.98 114.021C109.99 112.71 111.776 114.196 115.477 117.918C118.007 120.451 127.273 131.047 127.273 131.047C132.077 135.851 135.774 132.898 137.997 130.679C140.212 128.46 143.168 124.763 138.363 119.959ZM106.015 98.6992C98.9216 105.789 87.4215 105.789 80.3258 98.6992C73.2363 91.6076 73.2363 80.1035 80.3258 73.0161C87.4215 65.9245 98.9216 65.9245 106.015 73.0161C113.105 80.1035 113.105 91.6076 106.015 98.6992Z"
+        fill="white"
+        stroke="#FDFCFC"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M108.18 123.243C103.428 125.145 98.2922 126.14 93.1585 126.14C82.3992 126.14 72.2866 121.952 64.6811 114.346C48.9754 98.6383 48.9754 73.0773 64.6789 57.3674C72.2888 49.7575 82.4079 45.5647 93.1693 45.5647C101.483 45.5647 109.398 48.0911 116.084 52.7367V26.3155C116.084 13.459 105.623 3 92.7709 3H51.9353V19.6986C51.9353 37.4735 37.4757 51.9356 19.7032 51.9356H3V118.667C3 131.524 13.459 141.983 26.3177 141.983H92.7709C101.886 141.983 109.777 136.71 113.608 129.065C111.65 126.878 109.934 124.995 109.165 124.224C108.958 124.014 108.583 123.638 108.18 123.243Z"
+        fill="white"
+        stroke="#FDFCFC"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function ReferIcon() {
+  return (
+    <svg
+      width="164"
+      height="129"
+      viewBox="0 0 164 129"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-[30px] h-[30px]"
+    >
+      <path d="M0 0H128.185V128.185H0V0Z" fill="white" fillOpacity="0.01" />
+      <path
+        d="M64.093 53.4104C74.4172 53.4104 82.7866 45.041 82.7866 34.7168C82.7866 24.3926 74.4172 16.0232 64.093 16.0232C53.7688 16.0232 45.3994 24.3926 45.3994 34.7168C45.3994 45.041 53.7688 53.4104 64.093 53.4104Z"
+        fill="white"
+        stroke="white"
+        strokeWidth="10.7617"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.0234 108.957V112.162H112.162V108.957C112.162 96.992 112.162 91.0095 109.833 86.4395C107.785 82.4196 104.517 79.1511 100.497 77.1028C95.9268 74.7744 89.9443 74.7744 77.9793 74.7744H50.206C38.241 74.7744 32.2586 74.7744 27.6885 77.1028C23.6685 79.1511 20.4002 82.4196 18.352 86.4395C16.0234 91.0095 16.0234 96.992 16.0234 108.957Z"
+        fill="white"
+        stroke="white"
+        stroke-width="10.7617"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M155.125 58H101.875"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M137.375 44L155.125 58L137.375 72"
+        stroke="white"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

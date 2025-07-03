@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Button from "../../../../components/Button";
-import Flex from "../../../../components/Flex";
-import Text from "../../../../components/Text";
+import { Button } from "@/components/ui/button";
+import Flex from "@/components/Flex";
+import Text from "@/components/Text";
 
-import DentImg from "../../../../assets/logo/dent_logo_nobackground.png";
+import DentImg from "@/assets/logo/dent_logo_nobackground.png";
 
 import {
   AdduserIcon,
@@ -16,11 +16,21 @@ import {
   ReserveChartIcon,
   DashboardIcon,
   RoomIcon,
-} from "../../../../assets/svg/index";
-import { colors } from "../../../../theme/theme";
+  RightArrow,
+  LeftArrow,
+} from "../../../assets/svg/index";
+import { colors } from "../../../theme/theme";
 import axios from "axios";
-import { SuccessModal, ErrorModal } from "../../../../components/Modal";
-import Select from "../../../../components/Select";
+import { SuccessModal, ErrorModal } from "../../../components/Modal";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 function Header() {
   const [isActive, setActive] = useState<boolean>(false);
   const [modalOn, setModalOn] = useState<boolean>(false);
@@ -36,6 +46,8 @@ function Header() {
   const [selectedRole, setSelectedRole] = useState<string>(
     sessionStorage.getItem("roleName") || ""
   );
+
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleNavbar = () => {
     setActive(!isActive);
@@ -212,12 +224,21 @@ function Header() {
         <Flex alignItems="center" justifyContent="center" className="gap-[8px]">
           <Text className="text-black">บทบาท:</Text>
           {roleName === "Administrator" ? (
-            <Select
-              name="role"
-              options={roleOptions}
-              value={selectedRole}
-              onChange={(v) => setSelectedRole(v as string)}
-            />
+            <Select value={selectedRole} onValueChange={setSelectedRole}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>บทบาท</SelectLabel>
+                  {roleOptions.map((option, index) => (
+                    <SelectItem key={index} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           ) : (
             <Text>{roleName}</Text>
           )}
@@ -231,7 +252,8 @@ function Header() {
             return (
               <li key={index}>
                 <Button
-                  className={`w-full rounded-xl ${
+                  size={"sm"}
+                  className={`w-full ${
                     activeNavIndex === realIndex
                       ? "bg-[#7C22B4] text-white"
                       : ""
@@ -253,43 +275,73 @@ function Header() {
       <Flex
         justifyContent="between"
         backgroundColor="secondary"
-        className={`hidden lg:flex px-6 py-4 w-[370px] h-screen shadow-[${colors.primary}] shadow-xl`}
+        className={`relative hidden lg:flex px-6 py-4 transition-all duration-300 ${
+          collapsed ? "w-[80px]" : "w-[370px]"
+        } h-screen shadow-[${colors.primary}] shadow-xl`}
         direction="column"
       >
+        {/* ปุ่มย่อ/ขยาย header เฉพาะช่วงหน้าจอ 1024px <= width < 1280px */}
+        <Button
+          className={`absolute  ${
+            collapsed ? "left-15 top-4" : "left-[95%] top-2"
+          } -translate-x-full xl:hidden bg-[#A861D4] text-white rounded-full p-2 z-10 transition-all duration-200 shadow-none`}
+          onClick={() => setCollapsed((prev) => !prev)}
+          aria-label={collapsed ? "ขยายเมนู" : "ย่อเมนู"}
+        >
+          {collapsed ? <LeftArrow /> : <RightArrow />}
+        </Button>
+
         <Flex direction="column" className="gap-[28px]">
+          {/* ...existing header content... */}
           <Flex
             direction="column"
             justifyContent="center"
             alignItems="center"
             textAlign="center"
-            onClick={() => nav("/home")}
-            className="p-5 gap-[8px] hover:cursor-pointer"
+            className={`p-5 gap-[8px]  ${collapsed ? "p-2" : ""}`}
           >
             <Text
               bold
-              className="text-white text-[32px] text-shadow-sm text-shadow-black/40"
+              className={`text-white ${
+                collapsed ? "text-[20px] hidden" : "text-[32px]"
+              } text-shadow-sm text-shadow-black/40`}
             >
               e-Chart
             </Text>
-            <img
-              src={DentImg}
-              alt="Logo"
-              className="w-[220px] rounded-[120px] bg-white"
-            />
-            <Text semibold className="text-white text-[24px]">
-              {users}
-            </Text>
+            {!collapsed && (
+              <img
+                src={DentImg}
+                alt="Logo"
+                className="w-[220px] rounded-[120px] bg-white"
+              />
+            )}
+            {!collapsed && (
+              <Text semibold className="text-white text-[24px]">
+                {users}
+              </Text>
+            )}
             <Flex alignItems="center" className="gap-[8px]">
-              <Text className="text-white ">บทบาท:</Text>
+              <Text className="text-white ">{!collapsed && "บทบาท:"}</Text>
               {roleName === "Administrator" ? (
-                <Select
-                  name="role"
-                  options={roleOptions}
-                  value={selectedRole}
-                  onChange={(v) => setSelectedRole(v as string)}
-                />
+                !collapsed && (
+                  <Select value={selectedRole} onValueChange={setSelectedRole}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>บทบาท</SelectLabel>
+                        {roleOptions.map((option, index) => (
+                          <SelectItem key={index} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )
               ) : (
-                <Text>{roleName}</Text>
+                <Text>{!collapsed && roleName}</Text>
               )}
             </Flex>
           </Flex>
@@ -311,9 +363,11 @@ function Header() {
                 >
                   <Flex className={`gap-[8px]`}>
                     {list.icon}
-                    <Text medium className="text-white text-[20px]">
-                      {list.desc}
-                    </Text>
+                    {!collapsed && (
+                      <Text className="text-white text-[20px]">
+                        {list.desc}
+                      </Text>
+                    )}
                   </Flex>
                 </li>
               );
@@ -327,9 +381,11 @@ function Header() {
           >
             <Flex className="gap-[8px]" onClick={handleSignout}>
               <LogoutIcon />
-              <Text medium className="text-white text-[20px]">
-                ลงชื่อออก
-              </Text>
+              {!collapsed && (
+                <Text medium className="text-white text-[20px]">
+                  ลงชื่อออก
+                </Text>
+              )}
             </Flex>
           </Flex>
         </Flex>

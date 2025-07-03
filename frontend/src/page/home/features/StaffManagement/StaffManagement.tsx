@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { AddIcon } from "../../../../../assets/svg";
-import Button from "../../../../../components/Button";
-import Flex from "../../../../../components/Flex";
-import Text from "../../../../../components/Text";
+import { AddIcon } from "@/assets/svg";
+import { Button } from "@/components/ui/button";
+import Flex from "@/components/Flex";
+import Text from "@/components/Text";
 import Stafftable from "./Stafftable";
 import Addstaff from "./Addstaff";
 
@@ -24,10 +24,11 @@ function StaffManagement() {
 
   return (
     <>
-      <Flex className="w-full  gap-[16px] lg:p-2" direction="column">
+      <Flex className="w-full  gap-[16px]" direction="column">
         <Flex justifyContent="end" className="gap-[12px]">
           <Button
-            className="bg-[#A861D4] hover:bg-[#A861D4]/70 max-lg:w-full"
+            size={"sm"}
+            className="max-lg:w-full"
             onClick={handleAddButton}
           >
             <AddIcon />

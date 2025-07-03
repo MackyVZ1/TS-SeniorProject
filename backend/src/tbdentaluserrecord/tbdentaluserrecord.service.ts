@@ -151,6 +151,7 @@ export class TbdentaluserrecordService {
         clinicName: user.clinic?.clinicName || null,
         roleID: user.roleID,
         roleName: user.role?.roleName || null,
+        studentID: user.studentID,
       }));
 
       if (data.length === 0) return { message: 'No users.' };

@@ -2,14 +2,14 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 
 import "./index.css";
-import Login from "./page/login/Login";
-import Home from "./page/home/Home";
-import Dashboard from "./page/home/component/features/Dashboard";
-import StaffManagement from "./page/home/component/features/StaffManagement/StaffManagement";
-import Addpatient from "./page/home/component/features/Addpatient";
-import Searchpatient from "./page/home/component/features/Searchpatient";
-import Reserveschart from "./page/home/component/features/Reserveschart";
-import Refer from "./page/home/component/features/Refer";
+import Login from "@/layout/login/Login";
+import Home from "@/layout/home/Home";
+import Dashboard from "@/page/home/features/Dashboard/Dashboard";
+import StaffManagement from "@/page/home/features/StaffManagement/StaffManagement";
+import Addpatient from "@/page/home/features/Patient/Addpatient";
+import Searchpatient from "@/page/home/features/Patient/Searchpatient";
+import Reserveschart from "@/page/home/features/Reserveschart";
+import Refer from "@/page/home/features/Refer";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>

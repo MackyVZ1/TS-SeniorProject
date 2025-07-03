@@ -236,6 +236,8 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
         }
       );
 
+      console.log(response);
+
       setStaffs(response.data.data ?? []);
       setTotal(response.data.total ?? 0);
       setPageCount(response.data.pageCount ?? 1);

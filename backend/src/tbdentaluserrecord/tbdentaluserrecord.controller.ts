@@ -47,9 +47,9 @@ export class TbdentaluserrecordController {
   ) {}
 
   //POST /api/tbdentalrecorduser ADMIN
-  @ApiOperation({ 
-    summary: 'ADMIN', 
-    description: 'สร้างผู้ใช้งานระบบทันตกรรม' 
+  @ApiOperation({
+    summary: 'ADMIN',
+    description: 'สร้างผู้ใช้งานระบบทันตกรรม',
   })
   @ApiBody({
     type: CreateTbdentaluserrecordDto,
@@ -225,7 +225,10 @@ export class TbdentaluserrecordController {
       type: 'object',
       properties: {
         statusCode: { type: 'number', example: 500 },
-        message: { type: 'string', example: 'Failed to fetch dental user records' },
+        message: {
+          type: 'string',
+          example: 'Failed to fetch dental user records',
+        },
         error: { type: 'string', example: 'Internal Server Error' },
       },
     },
@@ -235,7 +238,7 @@ export class TbdentaluserrecordController {
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('keyword') keyword?: string,
-    @Query('roleId', ParseIntPipe) roleId?: number,
+    @Query('roleId') roleId?: number,
     @Query('clinicId') clinicId?: string,
   ) {
     return this.tbdentaluserrecordService.findAll(
@@ -423,8 +426,11 @@ export class TbdentaluserrecordController {
     schema: {
       type: 'object',
       properties: {
-        message: { type: 'string', example: 'Dental user deleted successfully', },
-        deletedId: { type: 'string', example: 1, },
+        message: {
+          type: 'string',
+          example: 'Dental user deleted successfully',
+        },
+        deletedId: { type: 'string', example: 1 },
       },
     },
   })

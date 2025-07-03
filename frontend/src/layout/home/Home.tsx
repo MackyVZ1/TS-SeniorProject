@@ -1,8 +1,8 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import Flex from "../../components/Flex";
-import Header from "./component/header/Header";
+import Flex from "@/components/Flex";
+import Header from "@/page/home/header/Header";
 import { useEffect, useState } from "react";
-import { ErrorModal } from "../../components/Modal";
+import { ErrorModal } from "@/components/Modal";
 
 function Home() {
   const nav = useNavigate();
@@ -15,7 +15,7 @@ function Home() {
   useEffect(() => {
     if (!token) {
       setShowModal(true);
-      // แสดง modal 1 วินาทีแล้ว redirect
+
       setTimeout(() => {
         setShowModal(false);
         nav("/", { replace: true });
@@ -33,9 +33,12 @@ function Home() {
   }, [token, location.pathname, nav, roleName]);
 
   return (
-    <Flex direction="column" className="lg:flex-row">
+    <Flex
+      direction="column"
+      className="lg:flex-row lg:h-screen lg:overflow-hidden"
+    >
       <Header />
-      <Flex className="w-full p-[16px] md:p-[24px] lg:p-[24px]">
+      <Flex className="w-full h-full p-[16px] md:p-[20px] lg:p-[42px] lg:overflow-y-auto">
         <Outlet />
       </Flex>
       {showModal && (

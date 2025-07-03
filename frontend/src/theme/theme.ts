@@ -4,6 +4,7 @@ export const colors = {
   white: "#FFFFFF",
   black: "#000000",
   purple: "#E3C4F6",
+  ligntpurple: "#9C53C9",
   pink: "#CB91EF",
   placeholder: "#AFAFAF",
   grey: "#848484",

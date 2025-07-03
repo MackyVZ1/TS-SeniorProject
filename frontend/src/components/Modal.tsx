@@ -6,7 +6,7 @@ import {
 } from "../assets/svg";
 import Flex from "./Flex";
 import Text from "./Text";
-import Button from "./Button";
+import { Button } from "@/components/ui/button";
 
 interface ModalProps {
   message: string;
@@ -121,7 +121,7 @@ export function VerifyModal({
     >
       <Flex className="gap-4" justifyContent="center">
         <Button
-          className="group bg-white rounded-xl border border-[#7C22B4] w-[201px] hover:bg-[#848484] hover:border-[#848484]"
+          className="group bg-white rounded-xl border border-[#7C22B4] w-[201px] p-6 hover:bg-[#848484] hover:border-[#848484]"
           onClick={onCancel}
         >
           <Text className="text-[20px] text-[#A861D4] group-hover:text-white">
@@ -129,7 +129,7 @@ export function VerifyModal({
           </Text>
         </Button>
         <Button
-          className="bg-[#A861D4] rounded-xl w-[201px] hover:bg-[#A861D4]/70"
+          className="bg-[#A861D4] rounded-xl w-[201px] p-6 hover:bg-[#A861D4]/70"
           onClick={onVerify}
         >
           <Text className="text-[20px]">{verifyText}</Text>

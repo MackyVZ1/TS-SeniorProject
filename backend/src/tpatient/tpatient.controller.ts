@@ -108,7 +108,7 @@ export class TpatientController {
         type: 'object',
         properties: {
           statusCode: { type: 'number', example: 403 },
-          message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+          message: { type: 'string', example: 'Access denied.' },
           error: { type: 'string', example: 'Forbidden' },
         },
       },
@@ -198,7 +198,7 @@ export class TpatientController {
       type: 'object',
       properties: {
         statusCode: { type: 'number', example: 403 },
-        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        message: { type: 'string', example: 'Access denied.' },
         error: { type: 'string', example: 'Forbidden' },
       },
     },
@@ -280,7 +280,7 @@ export class TpatientController {
       type: 'object',
       properties: {
         statusCode: { type: 'number', example: 403 },
-        message: { type: 'string', example: 'Access denied. Required roles: admin. User role: teacher' },
+        message: { type: 'string', example: 'Access denied.' },
         error: { type: 'string', example: 'Forbidden' },
       },
     },

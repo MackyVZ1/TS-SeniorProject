@@ -27,14 +27,6 @@ var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
 var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 var jwtExpireMinutes = int.Parse(Environment.GetEnvironmentVariable("JWT_TOKEN_EXPIRE_MINUTES") ?? "60");
 
-Console.WriteLine($"DEBUG: Raw JWT_SECRET: '{jwtSecret}'"); // แสดงค่าทั้งหมด
-Console.WriteLine($"DEBUG: Is JWT_SECRET null or empty? {string.IsNullOrEmpty(jwtSecret)}");
-Console.WriteLine($"DEBUG: Raw JWT_ISSUER: '{jwtIssuer}'");
-Console.WriteLine($"DEBUG: Is JWT_ISSUER null or empty? {string.IsNullOrEmpty(jwtIssuer)}");
-Console.WriteLine($"DEBUG: Raw JWT_AUDIENCE: '{jwtAudience}'");
-Console.WriteLine($"DEBUG: Is JWT_AUDIENCE null or empty? {string.IsNullOrEmpty(jwtAudience)}");
-Console.WriteLine($"DEBUG: JWT_TOKEN_EXPIRE_MINUTES: {jwtExpireMinutes}");
-
 if (string.IsNullOrEmpty(jwtSecret) || string.IsNullOrEmpty(jwtIssuer) || string.IsNullOrEmpty(jwtAudience))
 {
     throw new InvalidOperationException("JWT_SECRET, JWT_ISSUER, and JWT_AUDIENCE must be set in .env file.");
@@ -61,6 +53,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
+
+
 builder.Services.AddAuthorization(options =>
 {
     // ตัวอย่างการสร้าง Policy สำหรับ Role (ถ้าคุณมี Role Based Authorization)
@@ -76,6 +70,19 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequirementDiagOnly", policy => policy.RequireClaim(ClaimTypes.Role, "RequirementDiag"));
     options.AddPolicy("HeadAssistantDentistOnly", policy => policy.RequireClaim(ClaimTypes.Role, "หัวหน้าผู้ช่วยทันตแพทย์"));
     options.AddPolicy("AssistantDentistOnly", policy => policy.RequireClaim(ClaimTypes.Role, "ผู้ช่วยทันตแพทย์"));
+});
+
+// CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontendOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5173") // <--- **สำคัญ:** เปลี่ยนเป็น Origin ของ Frontend ของคุณ
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials(); // อนุญาตให้ส่ง Credentials (เช่น Cookies, Authorization Headers)
+        });
 });
 
 // Add services to the container.
@@ -146,6 +153,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontendOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();

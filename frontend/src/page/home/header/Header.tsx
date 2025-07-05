@@ -121,9 +121,17 @@ function Header() {
 
   const roleOptions = [
     { value: "Administrator", label: "ผู้ดูแลระบบ" },
+    { value: "ระบบนัดหมาย", label: "ระบบนัดหมาย" },
+    { value: "การเงิน", label: "การเงิน" },
     { value: "เวชระเบียน", label: "เวชระเบียน" },
     { value: "อาจารย์", label: "อาจารย์" },
     { value: "ปริญญาตรี", label: "ปริญญาตรี" },
+    { value: "ระบบยา", label: "ระบบยา" },
+    { value: "ผู้ใช้งานทั่วไป", label: "ผู้ใช้งานทั่วไป" },
+    { value: "ปริญญาโท", label: "ปริญญาโท" },
+    { value: "RequirementDiag", label: "RequirementDiag" },
+    { value: "หัวหน้าผู้ช่วยทันตแพทย์", label: "หัวหน้าผู้ช่วยทันตแพทย์" },
+    { value: "ผู้ช่วยทันตแพทย์", label: "ผู้ช่วยทันตแพทย์" },
   ];
 
   const allFeatures = [
@@ -155,19 +163,32 @@ function Header() {
       icon: <ReserveChartIcon />,
       func: () => nav("/home/chartreserve"),
       desc: "จอง/คืนชาร์ต",
-      roles: ["เวชระเบียน"],
+      roles: ["เวชระเบียน", "อาจารย์", "ปริญญาตรี", "ปริญญาโท"],
     },
     {
       icon: <RoomIcon />,
       func: () => nav("/home/refer"),
       desc: "Refer",
-      roles: ["เวชระเบียน", "อาจารย์", "ปริญญาตรี"],
+      roles: ["เวชระเบียน", "อาจารย์", "ปริญญาตรี", "ปริญญาโท"],
     },
     {
       icon: <LogoutIcon />,
       func: handleSignout,
       desc: "ลงชื่อออก",
-      roles: ["Administrator", "เวชระเบียน", "อาจารย์", "ปริญญาตรี"],
+      roles: [
+        "Administrator",
+        "ระบบนัดหมาย",
+        "การเงิน",
+        "เวชระเบียน",
+        "อาจารย์",
+        "ปริญญาตรี",
+        "ระบบยา",
+        "ผู้ใช้งานทั่วไป",
+        "ปริญญาโท",
+        "RequirementDiag",
+        "หัวหน้าผู้ช่วยทันตแพทย์",
+        "ผู้ช่วยทันตแพทย์",
+      ],
     },
   ];
 

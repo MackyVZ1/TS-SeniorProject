@@ -467,17 +467,11 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
       )}
 
       {verifyOn == true && (
-        <Flex
-          className="fixed inset-0 z-50 bg-black/40"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <VerifyModal
-            message="ยืนยันการลบข้อมูล"
-            onCancel={() => handleModal()}
-            onVerify={handleRemoveStaff}
-          />
-        </Flex>
+        <VerifyModal
+          message="ยืนยันการลบข้อมูล"
+          onCancel={() => handleModal()}
+          onVerify={handleRemoveStaff}
+        />
       )}
 
       {modalOn && !error && (

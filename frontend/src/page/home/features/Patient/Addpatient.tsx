@@ -1,6 +1,6 @@
 import Flex from "@/components/Flex";
 import Text from "@/components/Text";
-import PatientInfo from "./PatientInfo";
+import Patientform from "./Patientform";
 
 function Addpatient() {
   return (
@@ -10,7 +10,7 @@ function Addpatient() {
           ลงทะเบียนคนไข้ใหม่
         </Text>
       </Flex>
-      <PatientInfo />
+      <Patientform />
     </Flex>
   );
 }

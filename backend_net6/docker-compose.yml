@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  mysql-net:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      # **สำคัญมาก:** ใช้ Docker Volume เพื่อเก็บข้อมูลฐานข้อมูล
+      # ข้อมูลจะไม่หายไปแม้ Container ถูกลบ
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin-net:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql-net
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    depends_on:
+      - mysql-net
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data: {}
+# docker-compose up --build -d

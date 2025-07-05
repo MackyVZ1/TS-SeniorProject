@@ -10,6 +10,7 @@ import Addpatient from "@/page/home/features/Patient/Addpatient";
 import Searchpatient from "@/page/home/features/Patient/Searchpatient";
 import Reserveschart from "@/page/home/features/Reserveschart";
 import Refer from "@/page/home/features/Refer";
+import PatientInfo from "./page/home/features/Patient/PatientInfo";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="management" element={<StaffManagement />} />
         <Route path="addpatient" element={<Addpatient />} />
         <Route path="searchpatient" element={<Searchpatient />} />
+        <Route path="patient/:dn" element={<PatientInfo />} />
         <Route path="chartreserve" element={<Reserveschart />} />
         <Route path="refer" element={<Refer />} />
       </Route>

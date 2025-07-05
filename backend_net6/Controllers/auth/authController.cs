@@ -1,4 +1,3 @@
-// AuthController.cs
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
@@ -6,19 +5,20 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using backend_net6.Models;
-using Microsoft.AspNetCore.Authorization; // สำหรับ [Authorize]
-using backend_net6.Services; // <-- เพิ่มบรรทัดนี้เพื่อเรียกใช้ IJwtTokenGenerator
+using Microsoft.AspNetCore.Authorization;
+using backend_net6.Services;
 
 namespace backend_net6.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class authController : ControllerBase
     {
         private readonly Database _db;
-        private readonly IConfiguration _config; // ยังคงเก็บ IConfiguration ไว้ หากมี config อื่นๆ ใน Controller
+        private readonly IConfiguration _config;
         private readonly ILogger<authController> _logger;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator; // <-- เพิ่มตรงนี้
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
         public authController(Database db, IConfiguration config, ILogger<authController> logger, IJwtTokenGenerator jwtTokenGenerator) // <-- เพิ่ม IJwtTokenGenerator
         {
@@ -28,7 +28,16 @@ namespace backend_net6.Controllers
             _jwtTokenGenerator = jwtTokenGenerator; // <-- กำหนดค่า
         }
 
+        /// <returns>Login</returns>
+        /// <response code="200">Login Successfully.</response>
+        /// <response code="400">Username and password are required.</response>
+        /// <response code="401">Invalid credentials.</response>
+        /// <response code="500">An error occurred during login.</response>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             if (loginRequest == null || string.IsNullOrEmpty(loginRequest.Users) || string.IsNullOrEmpty(loginRequest.Passw))
@@ -112,9 +121,19 @@ namespace backend_net6.Controllers
                 return StatusCode(500, "An error occurred during login.");
             }
         }
-
+        /// <returns>Logout</returns>
+        /// <response code="200">Logged out successfully.</response>
+        /// <response code="400">Invalid user ID format in token.</response>
+        /// <response code="401">Invalid token: User ID not found.., </response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">An error occurred during logout.</response>
         [HttpPost("logout")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Logout()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

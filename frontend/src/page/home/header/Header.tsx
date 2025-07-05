@@ -68,7 +68,7 @@ function Header() {
     const token = sessionStorage.getItem("token");
     try {
       await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        "https://localhost:7017/api/auth/logout",
         {},
         {
           headers: {

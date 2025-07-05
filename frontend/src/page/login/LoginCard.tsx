@@ -50,27 +50,32 @@ function LoginCard() {
 
   const handleSignup = async (values: z.infer<typeof formSchema>) => {
     try {
-      const {
-        data: { data },
-      } = await axios.post("http://localhost:3000/api/auth/login", {
-        users: values.username,
-        passw: values.password,
-      });
-
-      if (data) {
-        const { token, user } = data;
-        if (token && user) {
-          sessionStorage.setItem("token", token);
-          sessionStorage.setItem("users", user.users);
-          sessionStorage.setItem("roleName", user.roleName);
-          sessionStorage.setItem("roleId", user.roleId);
-          setModalOn(true);
-
-          setTimeout(() => {
-            setModalOn(false);
-            nav("/home");
-          }, 1000);
+      const response = await axios.post(
+        "https://localhost:7017/api/auth/login",
+        {
+          users: values.username,
+          passw: values.password,
         }
+      );
+
+      console.log(response?.data);
+
+      if (response?.data) {
+        const user = response?.data;
+        const token = user.token;
+        const userInfo = user.userInfo;
+
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("users", userInfo.username);
+        sessionStorage.setItem("roleName", userInfo.roleName);
+        sessionStorage.setItem("roleId", userInfo.roleID);
+
+        setModalOn(true);
+
+        setTimeout(() => {
+          setModalOn(false);
+          nav("/home");
+        }, 1000);
       }
     } catch (e: any) {
       let errorMessage = e?.response?.data?.message;

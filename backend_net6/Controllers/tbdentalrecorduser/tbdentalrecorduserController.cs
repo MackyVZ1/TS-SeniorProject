@@ -1,4 +1,5 @@
 using backend_net6.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,7 @@ public class tbdentalrecorduserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> PostTbdentalrecorduser([FromBody] tbdentalrecorduserModel user)
     {
         _logger.LogDebug("POST /api/tbdentalrecorduser");
@@ -67,6 +69,7 @@ public class tbdentalrecorduserController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<tbdentalrecorduserDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult> GetTbdentalrecordusers()
     {
         _logger.LogDebug("GET /api/tbdentalrecord");
@@ -105,6 +108,7 @@ public class tbdentalrecorduserController : ControllerBase
     [ProducesResponseType(typeof(tbdentalrecorduserDto), StatusCodes.Status200OK)] // เปลี่ยน Type เป็น DTO
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<tbdentalrecorduserModel>> GetTbdentalrecorduser([FromRoute] int userId)
     {
         _logger.LogDebug("GET /api/tbdentalrecorduser/:userId");
@@ -136,6 +140,7 @@ public class tbdentalrecorduserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteTbdentalrecorduser([FromRoute] int userId)
     {
         _logger.LogDebug("DELETE /api/tbdentalrecorduser/:userId}");
@@ -169,6 +174,7 @@ public class tbdentalrecorduserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> PatchTbdentalrecorduser([FromRoute] int userId, tbdentalrecorduserPatchDto patchDto)
     {
         _logger.LogDebug("PATCH /api/tbdentalrecorduser/:userId");

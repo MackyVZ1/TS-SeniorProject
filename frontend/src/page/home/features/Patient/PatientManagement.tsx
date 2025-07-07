@@ -1,7 +1,7 @@
 import Flex from "@/components/Flex";
 import Patienttable from "./Patienttable";
 
-function Searchpatient() {
+function PatientManagement() {
   return (
     <Flex direction="column" className=" gap-[42px] w-full">
       <Patienttable />
@@ -9,4 +9,4 @@ function Searchpatient() {
   );
 }
 
-export default Searchpatient;
+export default PatientManagement;

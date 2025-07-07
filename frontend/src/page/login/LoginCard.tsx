@@ -78,17 +78,15 @@ function LoginCard() {
         }, 1000);
       }
     } catch (e: any) {
-      let errorMessage = e?.response?.data?.message;
-      if (errorMessage == "Username and password should not be empty.") {
+      let errorMessage = e?.response?.data;
+      console.error(errorMessage);
+      if (errorMessage == "Username and password are required") {
         errorMessage = "กรุณากรอกชื่อผู้ใช้\nและรหัสผ่าน";
         setError(errorMessage);
-      } else if (errorMessage == "Username should not be empty.") {
-        errorMessage = "กรุณากรอกชื่อผู้ใช้";
+      } else if (errorMessage == "Wrong password") {
+        errorMessage = "รหัสผ่านผิด";
         setError(errorMessage);
-      } else if (errorMessage == "Password should not be empty.") {
-        errorMessage = "กรุณากรอกรหัสผ่าน";
-        setError(errorMessage);
-      } else if (errorMessage == "User not found.") {
+      } else if (errorMessage == "Tbdentalrecorduser not found") {
         errorMessage = "ไม่พบผู้ใช้";
         setError(errorMessage);
       } else errorMessage = "เซิร์ฟเวอร์ขัดข้อง";

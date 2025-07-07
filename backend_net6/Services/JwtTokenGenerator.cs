@@ -1,4 +1,3 @@
-// JwtTokenGenerator.cs
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
@@ -67,7 +66,7 @@ namespace backend_net6.Services
                 issuer: jwtIssuer,
                 audience: jwtAudience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(jwtExpireMinutes),
+                expires: DateTime.UtcNow.AddMinutes(jwtExpireMinutes),
                 signingCredentials: creds
             );
 

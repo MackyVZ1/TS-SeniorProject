@@ -10,7 +10,7 @@ function DentLogo() {
       textAlign="center"
     >
       <img src={DentImg} alt="Logo" className="w-[150px] md:w-[200px]" />
-      <Text medium className="text-[18px] md:text-[24px] lg:text-[32px]">
+      <Text bold className="text-[18px] md:text-[24px] lg:text-[32px]">
         โรงพยาบาลทันตกรรม คณะทันตแพทยศาสตร์
         <br />
         มหาวิทยาลัยนเรศวร

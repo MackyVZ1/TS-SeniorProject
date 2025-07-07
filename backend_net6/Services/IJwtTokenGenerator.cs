@@ -1,4 +1,3 @@
-// IJwtTokenGenerator.cs
 namespace backend_net6.Services
 {
     public interface IJwtTokenGenerator

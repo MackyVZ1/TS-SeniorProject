@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import xray from "@/assets/jpg/x-ray.jpg";
 
 type Patient = {
   dn: string | null;
@@ -36,7 +37,7 @@ function PatientInfo() {
     try {
       const token = sessionStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3000/api/patient/${dn}`,
+        `https://localhost:7017/api/tpatient/${dn}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -253,11 +254,15 @@ function PatientInfo() {
             <Flex
               direction="column"
               className="border border-[#AFAFAF] rounded-[16px] w-full h-full gap-[30px] p-6 lg:p-[24px]"
-            ></Flex>
+            >
+              <img src={xray} alt="xray" />
+            </Flex>
             <Flex
               direction="column"
               className="border border-[#AFAFAF] rounded-[16px] w-full h-full gap-[30px] p-6 lg:p-[24px]"
-            ></Flex>
+            >
+              <img src={xray} alt="xray" />
+            </Flex>
           </Flex>
         </Flex>
       </ScrollArea>

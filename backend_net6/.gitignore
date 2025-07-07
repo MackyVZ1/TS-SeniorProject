@@ -1,1 +1,5 @@
 .env
+
+## .NET 6
+bin
+obj

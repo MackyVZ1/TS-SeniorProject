@@ -37,13 +37,11 @@ import {
 } from "@/components/ui/pagination";
 
 type Staff = {
-  userId: string | null;
-  fName: string;
-  lName: string;
+  userId: number | null;
+  fname: string;
+  lname: string;
   license: string | null;
-  roleName?: string | null;
-  clinicName?: string | null;
-  tName?: string | null;
+  tname?: string | null;
   studentID?: string;
   roleID?: number;
   users?: string;
@@ -82,10 +80,10 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
   const [limit] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
   const [pageCount, setPageCount] = useState<number>(1);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<number | null>(null);
 
   const [verifyOn, setVerifyOn] = useState<boolean>(false);
   const [modalOn, setModalOn] = useState<boolean>(false);
@@ -128,16 +126,26 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
     { value: "15", label: "รากเทียม" },
   ];
 
+  const roleNameMap: { [key: number]: string } = {};
+  roleOptions.forEach((option) => {
+    roleNameMap[option.value] = option.label;
+  });
+
+  const clinicNameMap: { [key: string]: string } = {};
+  clinincOptions.forEach((option) => {
+    clinicNameMap[option.value] = option.label;
+  });
+
   const pagination = getPagination(page, pageCount);
 
-  const handleModal = (userId: string | null = null) => {
+  const handleModal = (userId: number | null = null) => {
     setSelectedId(userId);
     setVerifyOn(!verifyOn);
   };
 
   // แก้ไขฟังก์ชัน handleEdit ให้รับ staff data
-  const handleEdit = (staff: Staff) => {
-    setSelectedStaff(staff);
+  const handleEdit = (userId: number | null = null) => {
+    setSelectedStaff(userId);
     setIsEditMode(true);
   };
 
@@ -163,7 +171,7 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
     try {
       const token = sessionStorage.getItem("token");
       const response = await axios.delete(
-        `http://localhost:3000/api/tbdentalrecorduser/${selectedId}`,
+        `https://localhost:7017/api/tbdentalrecorduser/${selectedId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -228,7 +236,7 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
       }
 
       const response = await axios.get(
-        `http://localhost:3000/api/tbdentalrecorduser?${queryParams.toString()}`,
+        `https://localhost:7017/api/tbdentalrecorduser?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -236,11 +244,12 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
         }
       );
 
-      console.log(response);
+      // console.log(response);
+      // console.log(response?.data);
 
-      setStaffs(response.data.data ?? []);
-      setTotal(response.data.total ?? 0);
-      setPageCount(response.data.pageCount ?? 1);
+      setStaffs(response?.data?.data ?? []); // เข้าถึง response.data.users
+      setTotal(response?.data?.total ?? 0); // เข้าถึง response.data.total
+      setPageCount(response?.data?.pageCount ?? 1); // เข้าถึง response.data.pageCount
     } catch (e: any) {
       let errorMessage = e.response?.data?.message;
       console.error(errorMessage);
@@ -279,7 +288,7 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
           className="p-2 border-[3px] border-[#A861D4] rounded-[8px] w-full"
         >
           <Select onValueChange={(e) => setRoleFilter(Number(e))}>
-            <SelectTrigger className="border-none w-full p-4 shadow-none">
+            <SelectTrigger className="border-none w-full p-4 shadow-none focus-visible:ring-0">
               <SelectValue placeholder="กรองด้วยบทบาท" />
             </SelectTrigger>
             <SelectContent>
@@ -299,7 +308,7 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
           className="p-2 border-[3px] border-[#A861D4] rounded-[8px] w-full"
         >
           <Select onValueChange={setClinicFilter}>
-            <SelectTrigger className="border-none w-full p-4 shadow-none">
+            <SelectTrigger className="border-none w-full p-4 shadow-none focus-visible:ring-0">
               <SelectValue placeholder="กรองด้วยคลินิก" />
             </SelectTrigger>
             <SelectContent>
@@ -325,27 +334,27 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
             <TableHeader className="bg-[#A861D4] sticky top-0 z-10">
               <TableRow className="hover:bg-transparent">
                 <TableHead className="p-4 min-w-[120px]">
-                  <Text className="text-white text-[24px]" semibold>
+                  <Text className="text-white text-[18px]" semibold>
                     userId
                   </Text>
                 </TableHead>
                 <TableHead className="p-4 min-w-[200px]">
-                  <Text className="text-white text-[24px]" semibold>
+                  <Text className="text-white text-[18px]" semibold>
                     ชื่อ - นามสกุล
                   </Text>
                 </TableHead>
                 <TableHead className="p-4 text-center min-w-[180px]">
-                  <Text className="text-white text-[24px]" semibold>
+                  <Text className="text-white text-[18px]" semibold>
                     เลขใบประกอบวิชาชีพ
                   </Text>
                 </TableHead>
                 <TableHead className="p-4 min-w-[150px]">
-                  <Text className="text-white text-[24px]" semibold>
+                  <Text className="text-white text-[18px]" semibold>
                     บทบาท
                   </Text>
                 </TableHead>
                 <TableHead className="p-4 text-center min-w-[150px]">
-                  <Text className="text-white text-[24px]" semibold>
+                  <Text className="text-white text-[18px]" semibold>
                     คลินิก
                   </Text>
                 </TableHead>
@@ -358,34 +367,36 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
               {staffs.map((staff, index) => (
                 <TableRow key={index}>
                   <TableCell className="p-4">
-                    <Text className="lg:text-[20px]" semibold>
-                      {staff.userId}
-                    </Text>
+                    <Text semibold>{staff.userId}</Text>
                   </TableCell>
                   <TableCell className="p-4">
-                    <Text className="lg:text-[20px]">
-                      {staff.tName}
-                      {staff.fName} {staff.lName}
+                    <Text>
+                      {staff.tname}
+                      {staff.fname} {staff.lname}
                     </Text>
                   </TableCell>
                   <TableCell className="p-4 text-center">
-                    <Text className="lg:text-[20px]">
-                      {staff.license || "-"}
-                    </Text>
+                    <Text>{staff.license || "-"}</Text>
                   </TableCell>
                   <TableCell className="p-4">
-                    <Text className="lg:text-[20px]">{staff.roleName}</Text>
+                    <Text>
+                      {staff.roleID !== undefined
+                        ? roleNameMap[staff.roleID] || "ไม่ระบุ"
+                        : "ไม่ระบุ"}
+                    </Text>
                   </TableCell>
                   <TableCell className="p-4 text-center">
-                    <Text className="lg:text-[20px]">
-                      {staff.clinicName || "-"}
+                    <Text>
+                      {staff.clinicid !== undefined
+                        ? clinicNameMap[staff.clinicid] || "-"
+                        : "-"}
                     </Text>
                   </TableCell>
                   <TableCell className="p-4">
                     <Flex justifyContent="center" className="gap-2">
                       <Button
                         className="bg-[#DEA344] hover:bg-[#DEA344]/70"
-                        onClick={() => handleEdit(staff)}
+                        onClick={() => handleEdit(staff.userId)}
                       >
                         <EditIcon />
                       </Button>
@@ -462,7 +473,7 @@ function Stafftable({ onClose, refreshTrigger }: Props) {
           onClose={handleCloseEdit}
           onUserAdded={handleAfterEdit}
           onEdit={true}
-          staffData={selectedStaff}
+          userId={selectedStaff}
         />
       )}
 

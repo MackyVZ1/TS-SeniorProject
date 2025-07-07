@@ -26,7 +26,7 @@ function Home() {
         if (roleName === "Administrator") {
           nav("/home", { replace: true });
         } else if (roleName === "เวชระเบียน") {
-          nav("/home/addpatient", { replace: true });
+          nav("/home/patientmanagement", { replace: true });
         }
       }
     }

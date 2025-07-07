@@ -56,28 +56,11 @@ type Staff = {
     | "-";
 };
 
-type StaffData = {
-  userId: string | null;
-  fName: string;
-  lName: string;
-  license: string | null;
-  roleName?: string | null;
-  clinicName?: string | null;
-  tName?: string | null;
-  studentID?: string;
-  roleID?: number;
-  users?: string;
-  passw?: string;
-  sort?: number;
-  type?: string;
-  clinicid?: string;
-};
-
 interface Props {
   onClose: () => void;
   onUserAdded?: () => void;
   onEdit?: boolean;
-  staffData?: StaffData | null;
+  user?: number | null;
 }
 
 const formSchema = z.object({
@@ -95,7 +78,7 @@ const formSchema = z.object({
   }),
 });
 
-function Addstaffform({ onClose, onUserAdded, onEdit, staffData }: Props) {
+function Addstaffform({ onClose, onUserAdded, onEdit, user }: Props) {
   const [staffCode, setStaffCode] = useState<Staff["staffCode"]>("");
   const [license, setLicense] = useState<Staff["license"]>("");
   const [title, setTitle] = useState<Staff["title"]>("นาย");
@@ -200,10 +183,10 @@ function Addstaffform({ onClose, onUserAdded, onEdit, staffData }: Props) {
 
       let response;
 
-      if (onEdit && staffData?.userId) {
+      if (onEdit && user) {
         console.log("กำลังดำเนินการอัปเดทข้อมูล...");
         response = await axios.patch(
-          `http://localhost:3000/api/tbdentalrecorduser/${staffData.userId}`,
+          `https://localhost:7017/api/tbdentalrecorduser/${user}`,
           staffPayload,
           {
             headers: {
@@ -227,7 +210,7 @@ function Addstaffform({ onClose, onUserAdded, onEdit, staffData }: Props) {
         }
       } else {
         response = await axios.post(
-          "http://localhost:3000/api/tbdentalrecorduser",
+          "https://localhost:7017/api/tbdentalrecorduser",
           staffPayload,
           {
             headers: {
@@ -255,19 +238,14 @@ function Addstaffform({ onClose, onUserAdded, onEdit, staffData }: Props) {
       let errorMessage = e.response?.data?.message;
       if (errorMessage == "Firstname required.") {
         setError("กรุณากรอกชื่อ");
-        console.error(errorMessage);
       } else if (errorMessage == "Role ID required.") {
         setError("กรุณากรอกตำแหน่ง");
-        console.error(errorMessage);
       } else if (errorMessage == "Username required.") {
         setError("กรุณากรอกชื่อผู้ใช้");
-        console.error(errorMessage);
       } else if (errorMessage == "Password required.") {
         setError("กรุณากรอกรหัสผ่าน");
-        console.error(errorMessage);
       } else {
-        errorMessage = "เซิร์ฟเวอร์ขัดข้อง";
-        setError(errorMessage);
+        setError("เซิร์ฟเวอร์ขัดข้อง");
       }
       setVerifyOn(false);
       setModalOn(true);
@@ -280,22 +258,57 @@ function Addstaffform({ onClose, onUserAdded, onEdit, staffData }: Props) {
   };
 
   useEffect(() => {
-    if (onEdit && staffData) {
-      setStaffCode(staffData.studentID || "");
-      setLicense(staffData.license || "");
-      setTitle((staffData.tName as Staff["title"]) || "นาย");
-      setRole((staffData.roleID as Staff["role"]) || 1);
-      setSort((staffData.sort as Staff["sort"]) || 0);
-      setType((staffData.type as Staff["type"]) || "ไม่ระบุ");
-      setClinic((staffData.clinicid as Staff["clinic"]) || "1");
+    if (onEdit && user) {
+      const staffFetch = async () => {
+        try {
+          const token = sessionStorage.getItem("token");
+          const response = await axios.get(
+            `https://localhost:7017/api/tbdentalrecorduser/${user}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-      // Set form values for controlled inputs
-      form.setValue("firstname", staffData.fName || "");
-      form.setValue("lastname", staffData.lName || "");
-      form.setValue("username", staffData.users || "");
-      form.setValue("password", staffData.passw || "");
+          console.log(response?.data);
+          if (response?.data) {
+            setStaffCode(response?.data.studentID || "");
+            setLicense(response?.data.license || "");
+            setTitle((response?.data.tname as Staff["title"]) || "นาย");
+            setRole((response?.data.roleID as Staff["role"]) || 1);
+            setSort((response?.data.sort as Staff["sort"]) || 0);
+            setType((response?.data.type as Staff["type"]) || "ไม่ระบุ");
+            setClinic((response?.data.clinicid as Staff["clinic"]) || "1");
+
+            // Set form values for controlled inputs
+            form.setValue("firstname", response?.data.fname || "");
+            form.setValue("lastname", response?.data.lname || "");
+            form.setValue("username", response?.data.users || "");
+            form.setValue("password", response?.data.passw || "");
+          }
+        } catch (e: any) {
+          let errorMessage = e.response?.data;
+          // console.error(errorMessage);
+          if (errorMessage == "Unauthorized") {
+            setError("ไม่มีสิทธิ์เข้าถึงข้อมูล");
+          } else if (errorMessage == "Tbdentalrecorduser not found.") {
+            setError("ไม่พบผู้ใช้");
+          } else setError("เซิร์ฟเวอร์ขัดข้อง");
+
+          setVerifyOn(false);
+          setModalOn(true);
+
+          setTimeout(() => {
+            setError("");
+            setModalOn(false);
+          }, 1000);
+        }
+      };
+
+      staffFetch();
     }
-  }, [onEdit, staffData, form]);
+  }, [onEdit, user, form]);
 
   return (
     <Form {...form}>
@@ -329,7 +342,7 @@ function Addstaffform({ onClose, onUserAdded, onEdit, staffData }: Props) {
           </Flex>
           <Flex className="gap-6 max-lg:flex-col">
             <Flex alignItems="center" className="gap-[16px]">
-              <Text className="min-w-[80px] text-black lg:text-[20px]">
+              <Text className="min-w-[90px] text-black lg:text-[20px]">
                 คำนำหน้า
               </Text>
               <Select

@@ -11,7 +11,6 @@ import {
   HamburgerIcon,
   CloseIcon,
   LogoutIcon,
-  UserSearchIcon,
   StaffManagementIcon,
   ReserveChartIcon,
   DashboardIcon,
@@ -98,27 +97,6 @@ function Header() {
     }
   };
 
-  useEffect(() => {
-    if (selectedRole === "Administrator") {
-      const path = location.pathname;
-      const index = navbarList.findIndex((item) => {
-        if (item.desc === "แดชบอร์ด")
-          return path === "/home" || path === "/home/dashboard";
-        if (item.desc === "จัดการข้อมูลเจ้าหน้าที่")
-          return path === "/home/management";
-        if (item.desc === "ลงทะเบียนคนไข้ใหม่")
-          return path === "/home/addpatient";
-        if (item.desc === "ค้นหาคนไข้") return path === "/home/searchpatient";
-        if (item.desc === "จอง/คืนชาร์ต") return path === "/home/chartreserve";
-        if (item.desc === "Refer") return path === "/home/refer";
-        return false;
-      });
-      setActiveNavIndex(index === -1 ? null : index);
-    } else {
-      setActiveNavIndex(0);
-    }
-  }, [selectedRole, location.pathname]);
-
   const roleOptions = [
     { value: "Administrator", label: "ผู้ดูแลระบบ" },
     { value: "ระบบนัดหมาย", label: "ระบบนัดหมาย" },
@@ -143,20 +121,14 @@ function Header() {
     },
     {
       icon: <StaffManagementIcon />,
-      func: () => nav("/home/management"),
+      func: () => nav("/home/staffmanagement"),
       desc: "จัดการข้อมูลเจ้าหน้าที่",
       roles: ["Administrator"],
     },
     {
       icon: <AdduserIcon />,
-      func: () => nav("/home/addpatient"),
-      desc: "ลงทะเบียนคนไข้ใหม่",
-      roles: ["เวชระเบียน"],
-    },
-    {
-      icon: <UserSearchIcon />,
-      func: () => nav("/home/searchpatient"),
-      desc: "ค้นหาคนไข้",
+      func: () => nav("/home/patientmanagement"),
+      desc: "จัดการข้อมูลคนไข้",
       roles: ["เวชระเบียน"],
     },
     {
@@ -195,6 +167,47 @@ function Header() {
   const navbarList = allFeatures.filter((item) =>
     item.roles.includes(selectedRole)
   );
+
+  // ฟังก์ชันหาค่า active index จาก path ปัจจุบัน
+  const getActiveIndexFromPath = (path: string) => {
+    const pathToFeatureMap = {
+      "/home": "แดชบอร์ด",
+      "/home/dashboard": "แดชบอร์ด",
+      "/home/staffmanagement": "จัดการข้อมูลเจ้าหน้าที่",
+      "/home/patientmanagement": "จัดการข้อมูลคนไข้",
+      "/home/searchpatient": "ค้นหาคนไข้",
+      "/home/chartreserve": "จอง/คืนชาร์ต",
+      "/home/refer": "Refer",
+    };
+
+    const featureDesc = pathToFeatureMap[path as keyof typeof pathToFeatureMap];
+    if (!featureDesc) return null;
+
+    return allFeatures.findIndex((item) => item.desc === featureDesc);
+  };
+
+  useEffect(() => {
+    const path = location.pathname;
+    const activeIndex = getActiveIndexFromPath(path);
+
+    // ตรวจสอบว่า feature ที่จะ active นั้นมีอยู่ใน navbarList ของ role ปัจจุบันหรือไม่
+    if (activeIndex !== -1 && activeIndex !== null) {
+      const activeFeature = allFeatures[activeIndex];
+      const isFeatureAvailable = navbarList.some(
+        (item) => item.desc === activeFeature.desc
+      );
+
+      if (isFeatureAvailable) {
+        setActiveNavIndex(activeIndex);
+      } else {
+        // ถ้า feature ไม่ available ใน role ปัจจุบัน ให้เซ็ตเป็น null
+        setActiveNavIndex(null);
+      }
+    } else {
+      setActiveNavIndex(null);
+    }
+  }, [selectedRole, location.pathname, navbarList]);
+
   return (
     <>
       {/******** Mobile *********/}
@@ -313,7 +326,6 @@ function Header() {
         </Button>
 
         <Flex direction="column" className="gap-[28px]">
-          {/* ...existing header content... */}
           <Flex
             direction="column"
             justifyContent="center"
@@ -362,7 +374,7 @@ function Header() {
                   </Select>
                 )
               ) : (
-                <Text>{!collapsed && roleName}</Text>
+                <Text className="text-white">{!collapsed && roleName}</Text>
               )}
             </Flex>
           </Flex>

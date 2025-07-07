@@ -173,7 +173,7 @@ function Patientform() {
       const birthDate = dayjs(formData.birthdate).format("DD/MM/BBBB");
 
       const response = await axios.post(
-        "http://localhost:3000/api/patient",
+        "https://localhost:7017/api/tpatient",
         {
           dn: formData.dn,
           titleTh: formData.thPrefix,
@@ -679,7 +679,7 @@ function Patientform() {
                   />
                 </Flex>
                 <Flex alignItems="center" className="gap-[12px]">
-                  <Text className="lg:text-[22px] md:min-w-[90px] lg:min-w-[120px]">
+                  <Text className="lg:text-[22px] md:min-w-[90px] lg:min-w-[130px]">
                     เบอร์ที่ทำงาน
                   </Text>
                   <FormField
@@ -701,7 +701,7 @@ function Patientform() {
                 direction="column"
               >
                 <Flex alignItems="center" className="gap-[12px]">
-                  <Text className="lg:text-[22px] md:min-w-[110px] lg:min-w-[150px]">
+                  <Text className="lg:text-[22px] md:min-w-[110px] lg:min-w-[180px]">
                     กรณีฉุกเฉินติดต่อ
                   </Text>
                   <FormField
@@ -740,7 +740,7 @@ function Patientform() {
                 alignItems="start"
                 direction="column"
               >
-                <Text className="lg:text-[22px] md:min-w-[110px] lg:min-w-[150px]">
+                <Text className="lg:text-[22px] md:min-w-[110px] lg:min-w-[170px]">
                   ที่อยู่ติดต่อฉุกเฉิน
                 </Text>
                 <FormField

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using backend_net6.Models;
 using Microsoft.AspNetCore.Authorization;
 using backend_net6.Services;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace backend_net6.Controllers
 {
@@ -29,20 +30,20 @@ namespace backend_net6.Controllers
         }
 
         /// <returns>Login</returns>
-        /// <response code="200">Login Successfully.</response>
-        /// <response code="400">Username and password are required.</response>
-        /// <response code="401">Invalid credentials.</response>
-        /// <response code="500">An error occurred during login.</response>
+        /// <response code="200">Login Successfully</response>
+        /// <response code="400">Username and password are required, Wrong password</response>
+        /// <response code="404">Tbdentalrecorduser not found</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             if (loginRequest == null || string.IsNullOrEmpty(loginRequest.Users) || string.IsNullOrEmpty(loginRequest.Passw))
             {
-                return BadRequest("Username and password are required.");
+                return BadRequest("Username and password are required");
             }
 
             _logger.LogDebug($"Attempting login for user: {loginRequest.Users}");
@@ -56,13 +57,13 @@ namespace backend_net6.Controllers
                 if (user == null)
                 {
                     _logger.LogWarning($"User {loginRequest.Users} not found.");
-                    return Unauthorized("Invalid credentials.");
+                    return NotFound("Tbdentalrecorduser not found");
                 }
 
                 if (user.Passw != PasswordHasher.HashMd5(loginRequest.Passw))
                 {
                     _logger.LogWarning($"Invalid password for user: {loginRequest.Users}");
-                    return Unauthorized("Invalid credentials.");
+                    return BadRequest("Wrong password");
                 }
 
                 // *** อัปเดต Status เป็น 1 เมื่อ Login สำเร็จ ***
@@ -108,6 +109,7 @@ namespace backend_net6.Controllers
                         RoleID = user.RoleID,
                         RoleName = roleNameForResponse, // ใช้ Role Name ที่สร้างขึ้นมาสำหรับ Response
                     }
+
                 });
             }
             catch (Exception ex)
@@ -118,15 +120,15 @@ namespace backend_net6.Controllers
                 {
                     return StatusCode(500, ex.Message); // ส่งข้อความ error ที่ชัดเจนกลับไป
                 }
-                return StatusCode(500, "An error occurred during login.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
         /// <returns>Logout</returns>
         /// <response code="200">Logged out successfully.</response>
-        /// <response code="400">Invalid user ID format in token.</response>
-        /// <response code="401">Invalid token: User ID not found.., </response>
-        /// <response code="404">User not found.</response>
-        /// <response code="500">An error occurred during logout.</response>
+        /// <response code="400">Invalid user ID format in token, User was already logged out</response>
+        /// <response code="401">Invalid token: User ID not found</response>
+        /// <response code="404">Tbdentalrecorduser not found</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost("logout")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -139,14 +141,14 @@ namespace backend_net6.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
-                _logger.LogWarning("Logout attempt failed: UserId claim not found in token.");
-                return Unauthorized("Invalid token: User ID not found.");
+                _logger.LogWarning("Logout attempt failed: UserId claim not found in token");
+                return Unauthorized("Invalid token: User ID not found");
             }
 
             if (!int.TryParse(userIdClaim.Value, out int userId))
             {
                 _logger.LogWarning($"Logout attempt failed: Invalid UserId format in token: {userIdClaim.Value}");
-                return BadRequest("Invalid user ID format in token.");
+                return BadRequest("Invalid user ID format in token");
             }
 
             _logger.LogDebug($"Attempting logout for user ID: {userId}");
@@ -157,8 +159,8 @@ namespace backend_net6.Controllers
 
                 if (user == null)
                 {
-                    _logger.LogWarning($"Logout attempt failed: User with ID {userId} not found.");
-                    return NotFound("User not found.");
+                    _logger.LogWarning($"Logout attempt failed: User with ID {userId} not found");
+                    return NotFound("Tbdentalrecorduser not found");
                 }
 
                 if (user.Status != 0)
@@ -171,6 +173,7 @@ namespace backend_net6.Controllers
                 else
                 {
                     _logger.LogInformation($"User {user.Users} (ID: {userId}) was already logged out (status 0).");
+                    return BadRequest($"User {user.Users} (ID: {userId}) was already logged out");
                 }
 
                 return Ok("Logged out successfully.");
@@ -178,7 +181,7 @@ namespace backend_net6.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error during logout for user ID: {userId}");
-                return StatusCode(500, $"An error occurred during logout: {ex.Message}");
+                return StatusCode(500, "Internal Server Error");
             }
         }
     }
